@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>RAZER × 鼎泰豐 — 效能饗宴</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --razer-green: #00FF41;
+    --razer-green-dim: #00C832;
+    --razer-green-glow: rgba(0,255,65,0.18);
+    --razer-green-glow2: rgba(0,255,65,0.08);
+    --dtf-red: #D4000A;
+    --dtf-gold: #C9A84C;
+    --black: #000000;
+    --dark: #0A0A0A;
+    --dark2: #111111;
+    --dark3: #1A1A1A;
+    --gray: #888;
+    --white: #F5F5F0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Noto Sans TC', sans-serif;
+    max-width: 430px;
+    margin: 0 auto;
+    overflow-x: hidden;
+  }
+
+  /* SCANLINE OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 100;
+    background: rgba(0,0,0,0.9);
+    border-bottom: 1px solid rgba(0,255,65,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 3px;
+    color: var(--white);
+  }
+
+  .nav-logos .x-mark {
+    color: var(--gray);
+    font-size: 12px;
+  }
+
+  .nav-logos .dtf-text {
+    color: var(--dtf-red);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .nav-snake {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-bag {
+    width: 22px;
+    height: 22px;
+    stroke: var(--white);
+    fill: none;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100svh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 60px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 60% 35%, rgba(0,255,65,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 50% 30%, rgba(0,200,50,0.08) 0%, transparent 60%),
+      var(--black);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,65,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,65,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
+  }
+
+  .hero-dumpling {
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 260px;
+  }
+
+  .hero-dumpling svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 30px rgba(0,255,65,0.4)) drop-shadow(0 0 60px rgba(0,255,65,0.2));
+    animation: floatDumpling 4s ease-in-out infinite;
+  }
+
+  @keyframes floatDumpling {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 24px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--razer-green);
+    margin-bottom: 12px;
+    opacity: 0.9;
+  }
+
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .hero-title .green { color: var(--razer-green); }
+
+  .hero-subtitle-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: var(--dtf-gold);
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+  }
+
+  .hero-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-primary {
+    flex: 1;
+    background: var(--razer-green);
+    color: var(--black);
+    border: none;
+    padding: 14px 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover { background: #00e038; }
+
+  .btn-secondary {
+    flex: 1;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 14px 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--razer-green); color: var(--razer-green); }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(0,255,65,0.6), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* SECTION BASE */
+  section { padding: 60px 24px; }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--razer-green);
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .section-title-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--dtf-gold);
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+
+  /* CRAFT vs PERFORMANCE */
+  .split-section {
+    background: var(--dark);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .split-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .split-item {
+    padding: 40px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .split-item:first-child {
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .split-brand {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+
+  .split-brand.dtf { color: var(--dtf-red); }
+  .split-brand.razer { color: var(--razer-green); }
+
+  .split-title-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--white);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .split-detail {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  .split-center {
+    background: var(--dark2);
+    padding: 28px 24px;
+    text-align: center;
+    border-top: 1px solid rgba(0,255,65,0.15);
+    border-bottom: 1px solid rgba(0,255,65,0.15);
+  }
+
+  .split-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .split-tagline-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
+  }
+
+  /* FOLDS SECTION */
+  .folds-section {
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .folds-bg-num {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 200px;
+    color: rgba(0,255,65,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .folds-dumpling {
+    width: 180px;
+    margin: 24px auto;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(0,255,65,0.15));
+  }
+
+  .folds-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(0,255,65,0.1);
+    margin-top: 32px;
+  }
+
+  .folds-stat {
+    background: var(--dark);
+    padding: 20px 16px;
+  }
+
+  .folds-stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--razer-green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .folds-stat-label {
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+  }
+
+  /* PRODUCTS */
+  .products-section {
+    background: var(--dark);
+    padding: 60px 0 60px;
+  }
+
+  .products-header {
+    padding: 0 24px 32px;
+  }
+
+  .products-scroll {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .product-card {
+    background: var(--dark2);
+    border: 1px solid rgba(0,255,65,0.12);
+    overflow: hidden;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    transition: border-color 0.3s;
+  }
+
+  .product-card:hover {
+    border-color: rgba(0,255,65,0.4);
+  }
+
+  .product-card-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+  }
+
+  .product-img-area {
+    height: 180px;
+    background: var(--dark3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-img-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0,255,65,0.07) 0%, transparent 70%);
+  }
+
+  .product-img-svg {
+    width: 130px;
+    height: 130px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .product-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--razer-green);
+    color: var(--black);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    font-weight: 700;
+  }
+
+  .product-body {
+    padding: 18px 20px 20px;
+  }
+
+  .product-name-en {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--white);
+    margin-bottom: 2px;
+  }
+
+  .product-name-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    color: var(--dtf-gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .product-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .product-spec {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .spec-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--razer-green);
+    border: 1px solid rgba(0,255,65,0.3);
+    padding: 3px 8px;
+  }
+
+  .product-view {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--razer-green);
+    cursor: pointer;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+
+  .product-view:hover { gap: 10px; }
+
+  .product-view-arrow {
+    font-size: 16px;
+  }
+
+  /* HEAT SECTION */
+  .heat-section {
+    background: var(--black);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 24px;
+  }
+
+  .heat-visual {
+    position: relative;
+    margin: 40px auto;
+    width: 220px;
+    height: 220px;
+  }
+
+  .heat-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: heatPulse 3s ease-in-out infinite;
+  }
+
+  .heat-circle:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    border-color: rgba(0,255,65,0.8);
+    animation-delay: 0s;
+  }
+
+  .heat-circle:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    border-color: rgba(0,255,65,0.5);
+    animation-delay: 0.5s;
+  }
+
+  .heat-circle:nth-child(3) {
+    width: 160px;
+    height: 160px;
+    border-color: rgba(0,255,65,0.3);
+    animation-delay: 1s;
+  }
+
+  .heat-circle:nth-child(4) {
+    width: 200px;
+    height: 200px;
+    border-color: rgba(0,255,65,0.15);
+    animation-delay: 1.5s;
+  }
+
+  @keyframes heatPulse {
+    0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+  }
+
+  .heat-temp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .heat-temp-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 36px;
+    color: var(--razer-green);
+    line-height: 1;
+  }
+
+  .heat-temp-unit {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+  }
+
+  .heat-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .heat-title span { color: var(--razer-green); }
+
+  .heat-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+  }
+
+  .heat-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.8;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  /* MANIFESTO SECTION */
+  .manifesto-section {
+    background: var(--dark);
+    padding: 70px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .manifesto-section::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, transparent, var(--razer-green), transparent);
+  }
+
+  .manifesto-quote {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+
+  .manifesto-quote .accent { color: var(--razer-green); }
+  .manifesto-quote .dtf-accent { color: var(--dtf-gold); }
+
+  .manifesto-body {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.9;
+    margin-bottom: 32px;
+  }
+
+  .manifesto-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px;
+  }
+
+  /* COMMUNITY SECTION */
+  .community-section {
+    background: var(--black);
+    padding: 70px 24px;
+    text-align: center;
+  }
+
+  .community-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .community-card {
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 24px 16px;
+    text-align: left;
+  }
+
+  .community-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .community-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .community-label-zh {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 1px;
+  }
+
+  .join-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(0,255,65,0.4);
+    color: var(--razer-green);
+    padding: 15px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+  }
+
+  .join-btn:hover { background: rgba(0,255,65,0.1); }
+
+  /* DROP SECTION */
+  .drop-section {
+    background: var(--dark2);
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .drop-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--razer-green), transparent);
+  }
+
+  .drop-bg-text {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 120px;
+    color: rgba(0,255,65,0.03);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -5px;
+  }
+
+  .drop-badge {
+    display: inline-block;
+    background: var(--dtf-red);
+    color: var(--white);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+    animation: blinkBadge 2s step-end infinite;
+  }
+
+  @keyframes blinkBadge {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  .drop-products {
+    display: flex;
+    gap: 12px;
+    margin: 28px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .drop-products::-webkit-scrollbar { display: none; }
+
+  .drop-thumb {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    background: var(--dark3);
+    border: 1px solid rgba(0,255,65,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drop-thumb svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  .preorder-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--razer-green);
+    color: var(--black);
+    padding: 16px 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: background 0.2s;
+    text-decoration: none;
+  }
+
+  .preorder-btn:hover { background: #00e038; }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 40px 24px 60px;
+    text-align: center;
+  }
+
+  .footer-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .footer-logo-razer {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 4px;
+    color: var(--razer-green);
+  }
+
+  .footer-logo-dtf {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--dtf-red);
+    letter-spacing: 2px;
+  }
+
+  .footer-x { color: rgba(255,255,255,0.2); font-size: 14px; }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 2px;
+    line-height: 2;
+  }
+
+  /* DIVIDER */
+  .green-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,255,65,0.3), transparent);
+    margin: 0;
+  }
+
+  /* GLITCH TEXT */
+  @keyframes glitch {
+    0%, 95%, 100% { clip-path: none; transform: none; }
+    96% { clip-path: inset(40% 0 40% 0); transform: translateX(3px); }
+    97% { clip-path: inset(60% 0 10% 0); transform: translateX(-3px); }
+    98% { clip-path: inset(20% 0 60% 0); transform: translateX(2px); }
+  }
+
+  .glitch {
+    animation: glitch 8s step-end infinite;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logos">
+    <svg class="nav-snake" viewBox="0 0 28 28" fill="none">
+      <path d="M14 4C10 4 6 7 6 12C6 17 10 19 14 19C18 19 22 22 22 26" stroke="#00FF41" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M10 8C10 8 8 11 9 14" stroke="#00FF41" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <circle cx="14" cy="4" r="2" fill="#00FF41"/>
+    </svg>
+    <span>RAZER</span>
+    <span class="x-mark">×</span>
+    <span class="dtf-text">鼎泰豐</span>
+  </div>
+  <svg class="nav-bag" viewBox="0 0 24 24">
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-width="1.5"/>
+    <line x1="3" y1="6" x2="21" y2="6" stroke-width="1.5"/>
+    <path d="M16 10a4 4 0 01-8 0" stroke-width="1.5"/>
+  </svg>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-dumpling">
+    <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Glow base -->
+      <ellipse cx="130" cy="200" rx="80" ry="18" fill="rgba(0,255,65,0.12)"/>
+      <!-- Dumpling body -->
+      <ellipse cx="130" cy="160" rx="85" ry="55" fill="#0D1A0D"/>
+      <ellipse cx="130" cy="155" rx="82" ry="52" fill="#111F11"/>
+      <!-- Skin folds -->
+      <path d="M130 108 C100 100 72 118 65 148 C58 178 80 205 130 210 C180 205 202 178 195 148 C188 118 160 100 130 108Z" fill="#0E1A0E" stroke="rgba(0,255,65,0.3)" stroke-width="0.5"/>
+      <!-- Green glow veins -->
+      <path d="M130 108 C122 120 118 138 120 158 C122 178 126 192 130 200" stroke="rgba(0,255,65,0.5)" stroke-width="1" fill="none"/>
+      <path d="M130 108 C138 120 142 138 140 158 C138 178 134 192 130 200" stroke="rgba(0,255,65,0.5)" stroke-width="1" fill="none"/>
+      <path d="M110 112 C100 128 96 148 100 168 C104 182 112 194 124 200" stroke="rgba(0,255,65,0.3)" stroke-width="0.8" fill="none"/>
+      <path d="M150 112 C160 128 164 148 160 168 C156 182 148 194 136 200" stroke="rgba(0,255,65,0.3)" stroke-width="0.8" fill="none"/>
+      <!-- Fold lines at top -->
+      <path d="M120 108 C122 102 128 100 130 100 C132 100 138 102 140 108" stroke="rgba(0,255,65,0.7)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M113 111 C116 105 120 102 124 106" stroke="rgba(0,255,65,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M147 111 C144 105 140 102 136 106" stroke="rgba(0,255,65,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M108 116 C111 110 114 108 117 112" stroke="rgba(0,255,65,0.35)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M152 116 C149 110 146 108 143 112" stroke="rgba(0,255,65,0.35)" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <!-- Razer logo hint on dumpling -->
+      <path d="M124 155 L130 145 L136 155 L130 165Z" fill="none" stroke="rgba(0,255,65,0.4)" stroke-width="1"/>
+      <!-- Steam wisps -->
+      <path d="M110 95 C108 85 112 78 110 68" stroke="rgba(0,255,65,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M130 90 C128 78 132 70 130 58" stroke="rgba(0,255,65,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M150 95 C148 85 152 78 150 68" stroke="rgba(0,255,65,0.25)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- Platform glow -->
+      <ellipse cx="130" cy="210" rx="70" ry="8" fill="rgba(0,255,65,0.08)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">// LIMITED_COLLECTION_2025</div>
+    <div class="hero-title glitch">PERFORMANCE<br><span class="green">FEAST</span></div>
+    <div class="hero-subtitle-zh">效能饗宴</div>
+    <div class="hero-desc">當熱能，變成美味。<br>When Heat Becomes Flavor.</div>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary">ENTER EXPERIENCE</a>
+      <a href="#drop" class="btn-secondary">PRE-ORDER</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<div class="green-divider"></div>
+
+<!-- SPLIT: CRAFT × PERFORMANCE -->
+<section class="split-section">
+  <div class="split-row">
+    <div class="split-item">
+      <div class="split-brand dtf">鼎泰豐</div>
+      <div class="split-title-zh">傳統工藝<br>精準十八摺</div>
+      <div class="split-detail">每一道摺線，都是對誤差的拒絕。</div>
+    </div>
+    <div class="split-item">
+      <div class="split-brand razer">RAZER</div>
+      <div class="split-title-zh">極致效能<br>精準到0.1毫秒</div>
+      <div class="split-detail">每一毫秒，都是勝負的關鍵。</div>
+    </div>
+  </div>
+  <div class="split-center">
+    <div class="split-tagline">CRAFT × PERFORMANCE</div>
+    <div class="split-tagline-zh">兩種世界，一種執著</div>
+  </div>
+</section>
+
+<!-- 18 FOLDS -->
+<section class="folds-section" style="padding: 60px 24px;">
+  <div class="folds-bg-num">18</div>
+  <div class="section-label">// PRECISION_PROTOCOL</div>
+  <div class="section-title">18 FOLDS.<br>INFINITE PRECISION.</div>
+  <div class="section-title-zh">精準無限，毫無誤差</div>
+
+  <svg class="folds-dumpling" viewBox="0 0 180 140" fill="none">
+    <ellipse cx="90" cy="105" rx="75" ry="30" fill="#0D1A0D"/>
+    <ellipse cx="90" cy="100" rx="72" ry="28" fill="#0E1A0E" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+    <!-- HUD ring -->
+    <circle cx="90" cy="70" r="55" stroke="rgba(0,255,65,0.12)" stroke-width="0.5" stroke-dasharray="4 4"/>
+    <circle cx="90" cy="70" r="65" stroke="rgba(0,255,65,0.07)" stroke-width="0.5"/>
+    <!-- Tick marks -->
+    <path d="M90 5 L90 14" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+    <path d="M152 38 L144 43" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+    <path d="M152 102 L144 97" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+    <path d="M28 38 L36 43" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+    <path d="M28 102 L36 97" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+    <!-- 18 folds drawn -->
+    <path d="M90 42 C82 38 76 44 74 52 C72 60 74 68 78 74 C82 80 86 84 90 86 C94 84 98 80 102 74 C106 68 108 60 106 52 C104 44 98 38 90 42Z" fill="#141F14" stroke="rgba(0,255,65,0.35)" stroke-width="0.5"/>
+    <!-- Individual fold lines -->
+    <path d="M90 42 C88 48 88 56 89 64" stroke="rgba(0,255,65,0.45)" stroke-width="0.7" fill="none"/>
+    <path d="M90 42 C92 48 92 56 91 64" stroke="rgba(0,255,65,0.45)" stroke-width="0.7" fill="none"/>
+    <path d="M85 43 C82 50 81 58 82 66" stroke="rgba(0,255,65,0.3)" stroke-width="0.6" fill="none"/>
+    <path d="M95 43 C98 50 99 58 98 66" stroke="rgba(0,255,65,0.3)" stroke-width="0.6" fill="none"/>
+    <path d="M80 46 C76 54 76 62 78 70" stroke="rgba(0,255,65,0.2)" stroke-width="0.6" fill="none"/>
+    <path d="M100 46 C104 54 104 62 102 70" stroke="rgba(0,255,65,0.2)" stroke-width="0.6" fill="none"/>
+    <!-- Crosshair -->
+    <circle cx="90" cy="64" r="2" fill="rgba(0,255,65,0.6)"/>
+    <path d="M86 64 L82 64 M94 64 L98 64 M90 60 L90 56 M90 68 L90 72" stroke="rgba(0,255,65,0.4)" stroke-width="0.7"/>
+  </svg>
+
+  <div class="folds-stats">
+    <div class="folds-stat">
+      <div class="folds-stat-num">18</div>
+      <div class="folds-stat-label">精準摺數</div>
+    </div>
+    <div class="folds-stat">
+      <div class="folds-stat-num">0.1<small style="font-size:16px">ms</small></div>
+      <div class="folds-stat-label">響應時間</div>
+    </div>
+    <div class="folds-stat">
+      <div class="folds-stat-num">21g</div>
+      <div class="folds-stat-label">精準克重</div>
+    </div>
+    <div class="folds-stat">
+      <div class="folds-stat-num">±0.2<small style="font-size:14px">g</small></div>
+      <div class="folds-stat-label">誤差容許</div>
+    </div>
+  </div>
+</section>
+
+<div class="green-divider"></div>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="products-header">
+    <div class="section-label">// LIMITED_COLLECTION</div>
+    <div class="section-title">效能饗宴<br>系列</div>
+    <div class="section-title-zh">PERFORMANCE FEAST SERIES</div>
+  </div>
+
+  <div class="products-scroll">
+
+    <!-- Product 1: PC Case -->
+    <div class="product-card">
+      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="#00FF41" opacity="0.4"/></svg>
+      <div class="product-img-area">
+        <div class="product-tag">NEW DROP</div>
+        <svg class="product-img-svg" viewBox="0 0 130 130" fill="none">
+          <!-- Steam basket case -->
+          <rect x="20" y="55" width="90" height="65" rx="4" fill="#0A1A0A" stroke="rgba(0,255,65,0.3)" stroke-width="1"/>
+          <!-- Bamboo weave pattern -->
+          <path d="M20 65 L110 65 M20 75 L110 75 M20 85 L110 85 M20 95 L110 95 M20 105 L110 105" stroke="rgba(0,255,65,0.1)" stroke-width="0.5"/>
+          <path d="M30 55 L30 120 M40 55 L40 120 M50 55 L50 120 M60 55 L60 120 M70 55 L70 120 M80 55 L80 120 M90 55 L90 120 M100 55 L100 120" stroke="rgba(0,255,65,0.08)" stroke-width="0.5"/>
+          <!-- Top lid -->
+          <rect x="16" y="42" width="98" height="18" rx="3" fill="#0D1A0D" stroke="rgba(0,255,65,0.4)" stroke-width="1"/>
+          <path d="M25 51 L105 51" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+          <!-- GPU glow inside -->
+          <rect x="32" y="70" width="66" height="30" rx="2" fill="rgba(0,255,65,0.05)" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+          <rect x="38" y="76" width="54" height="6" rx="1" fill="rgba(0,255,65,0.15)"/>
+          <!-- Fan circle -->
+          <circle cx="65" cy="90" r="10" fill="none" stroke="rgba(0,255,65,0.3)" stroke-width="1" stroke-dasharray="3 3"/>
+          <circle cx="65" cy="90" r="3" fill="rgba(0,255,65,0.4)"/>
+          <!-- Steam vents and actual steam -->
+          <path d="M40 42 C38 30 42 22 40 12" stroke="rgba(0,255,65,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M65 40 C63 28 67 18 65 8" stroke="rgba(0,255,65,0.4)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M90 42 C88 30 92 22 90 12" stroke="rgba(0,255,65,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Razer logo on case -->
+          <path d="M59 102 L65 95 L71 102 L65 109Z" fill="none" stroke="rgba(0,255,65,0.5)" stroke-width="0.8"/>
+        </svg>
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">STEAM CORE CASE</div>
+        <div class="product-name-zh">幻彩蒸籠主機殼</div>
+        <div class="product-desc">原木竹編外殼，頂層真．蒸籠模組。CPU散熱轉化為蒸氣動力，效能即美味。</div>
+        <div class="product-spec">
+          <span class="spec-pill">ATX FULL TOWER</span>
+          <span class="spec-pill">STEAM COOLING</span>
+          <span class="spec-pill">CHROMA RGB</span>
+        </div>
+        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
+      </div>
+    </div>
+
+    <!-- Product 2: Mouse -->
+    <div class="product-card">
+      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="#00FF41" opacity="0.4"/></svg>
+      <div class="product-img-area">
+        <div class="product-tag">SIGNATURE</div>
+        <svg class="product-img-svg" viewBox="0 0 130 130" fill="none">
+          <!-- Mouse body as dumpling shape -->
+          <ellipse cx="65" cy="85" rx="38" ry="22" fill="#0A1A0A" stroke="rgba(0,255,65,0.15)" stroke-width="0.5"/>
+          <path d="M65 40 C44 40 28 54 27 72 C26 90 38 105 65 108 C92 105 104 90 103 72 C102 54 86 40 65 40Z" fill="#0D1A0D" stroke="rgba(0,255,65,0.35)" stroke-width="1"/>
+          <!-- Fold lines (18 folds mimicked on mouse top) -->
+          <path d="M65 40 C63 50 63 62 64 72" stroke="rgba(0,255,65,0.5)" stroke-width="0.8" fill="none"/>
+          <path d="M65 40 C67 50 67 62 66 72" stroke="rgba(0,255,65,0.5)" stroke-width="0.8" fill="none"/>
+          <path d="M60 41 C57 52 56 64 57 74" stroke="rgba(0,255,65,0.35)" stroke-width="0.7" fill="none"/>
+          <path d="M70 41 C73 52 74 64 73 74" stroke="rgba(0,255,65,0.35)" stroke-width="0.7" fill="none"/>
+          <path d="M55 43 C50 55 49 67 51 77" stroke="rgba(0,255,65,0.2)" stroke-width="0.6" fill="none"/>
+          <path d="M75 43 C80 55 81 67 79 77" stroke="rgba(0,255,65,0.2)" stroke-width="0.6" fill="none"/>
+          <path d="M50 47 C44 60 44 73 47 83" stroke="rgba(0,255,65,0.12)" stroke-width="0.5" fill="none"/>
+          <path d="M80 47 C86 60 86 73 83 83" stroke="rgba(0,255,65,0.12)" stroke-width="0.5" fill="none"/>
+          <!-- Top fold knot -->
+          <ellipse cx="65" cy="42" rx="6" ry="4" fill="#141F14" stroke="rgba(0,255,65,0.6)" stroke-width="1"/>
+          <!-- Center line (left/right click) -->
+          <path d="M65 44 L65 100" stroke="rgba(0,255,65,0.2)" stroke-width="0.8"/>
+          <!-- Scroll wheel -->
+          <rect x="61" y="60" width="8" height="14" rx="4" fill="#0A1A0A" stroke="rgba(0,255,65,0.5)" stroke-width="1"/>
+          <!-- Bottom glow -->
+          <ellipse cx="65" cy="107" rx="28" ry="5" fill="rgba(0,255,65,0.15)"/>
+          <!-- Razer snake subtle -->
+          <path d="M60 82 C58 78 60 74 65 74 C70 74 72 78 70 82" stroke="rgba(0,255,65,0.3)" stroke-width="0.8" fill="none"/>
+        </svg>
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">XIAO LONG MOUSE</div>
+        <div class="product-name-zh">18摺精準觸感電競滑鼠</div>
+        <div class="product-desc">仿小籠包收口外型，類麵皮防汗觸感，精準光學感測，掌握每一道細節。</div>
+        <div class="product-spec">
+          <span class="spec-pill">30K DPI</span>
+          <span class="spec-pill">0.1ms</span>
+          <span class="spec-pill">18-FOLD GRIP</span>
+        </div>
+        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
+      </div>
+    </div>
+
+    <!-- Product 3: Headphones -->
+    <div class="product-card">
+      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="#00FF41" opacity="0.4"/></svg>
+      <div class="product-img-area">
+        <div class="product-tag">LIMITED</div>
+        <svg class="product-img-svg" viewBox="0 0 130 130" fill="none">
+          <!-- Headband arc -->
+          <path d="M28 70 C28 38 45 18 65 18 C85 18 102 38 102 70" fill="none" stroke="rgba(0,255,65,0.5)" stroke-width="3" stroke-linecap="round"/>
+          <!-- Left ear cup (bamboo lid shape) -->
+          <circle cx="24" cy="78" r="22" fill="#0D1A0D" stroke="rgba(0,255,65,0.3)" stroke-width="1"/>
+          <circle cx="24" cy="78" r="16" fill="#0A1A0A" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+          <!-- Bamboo weave on left cup -->
+          <path d="M10 74 L38 74 M10 78 L38 78 M10 82 L38 82" stroke="rgba(0,255,65,0.12)" stroke-width="0.5"/>
+          <path d="M20 62 L20 94 M24 62 L24 94 M28 62 L28 94" stroke="rgba(0,255,65,0.1)" stroke-width="0.5"/>
+          <!-- Lid handle left -->
+          <circle cx="24" cy="56" r="4" fill="#0D1A0D" stroke="rgba(0,255,65,0.4)" stroke-width="1"/>
+          <line x1="24" y1="60" x2="24" y2="62" stroke="rgba(0,255,65,0.3)" stroke-width="1"/>
+          <!-- Steam indicator left -->
+          <path d="M18 54 C17 48 19 44 18 38" stroke="rgba(0,255,65,0.25)" stroke-width="1" stroke-linecap="round"/>
+          <path d="M24 52 C23 44 25 40 24 32" stroke="rgba(0,255,65,0.35)" stroke-width="1" stroke-linecap="round"/>
+          <!-- Right ear cup -->
+          <circle cx="106" cy="78" r="22" fill="#0D1A0D" stroke="rgba(0,255,65,0.3)" stroke-width="1"/>
+          <circle cx="106" cy="78" r="16" fill="#0A1A0A" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+          <path d="M92 74 L120 74 M92 78 L120 78 M92 82 L120 82" stroke="rgba(0,255,65,0.12)" stroke-width="0.5"/>
+          <path d="M102 62 L102 94 M106 62 L106 94 M110 62 L110 94" stroke="rgba(0,255,65,0.1)" stroke-width="0.5"/>
+          <circle cx="106" cy="56" r="4" fill="#0D1A0D" stroke="rgba(0,255,65,0.4)" stroke-width="1"/>
+          <line x1="106" y1="60" x2="106" y2="62" stroke="rgba(0,255,65,0.3)" stroke-width="1"/>
+          <path d="M100 54 C99 48 101 44 100 38" stroke="rgba(0,255,65,0.25)" stroke-width="1" stroke-linecap="round"/>
+          <path d="M106 52 C105 44 107 40 106 32" stroke="rgba(0,255,65,0.35)" stroke-width="1" stroke-linecap="round"/>
+          <!-- Gold accent ring -->
+          <circle cx="24" cy="78" r="19" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="0.5"/>
+          <circle cx="106" cy="78" r="19" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="product-body">
+        <div class="product-name-en">SEALED AUDIO SYSTEM</div>
+        <div class="product-name-zh">低延遲湯包耳機</div>
+        <div class="product-desc">蒸籠蓋造型耳罩，完美氣密設計。如小籠包鎖住湯汁，聆聽每一個音效細節。</div>
+        <div class="product-spec">
+          <span class="spec-pill">2.4GHz</span>
+          <span class="spec-pill">SEAL-FIT</span>
+          <span class="spec-pill">THX AUDIO</span>
+        </div>
+        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="green-divider"></div>
+
+<!-- HEAT INTO EXPERIENCE -->
+<section class="heat-section">
+  <div class="section-label">// THERMAL_PHILOSOPHY</div>
+  <div class="heat-title">TURN <span>HEAT</span><br>INTO EXPERIENCE.</div>
+  <div class="heat-zh">把散熱，變成享受。</div>
+
+  <div class="heat-visual">
+    <div class="heat-circle"></div>
+    <div class="heat-circle"></div>
+    <div class="heat-circle"></div>
+    <div class="heat-circle"></div>
+    <div class="heat-temp">
+      <div class="heat-temp-num">88°</div>
+      <div class="heat-temp-unit">CPU TEMP</div>
+    </div>
+  </div>
+
+  <div class="heat-desc">玩家最怕主機過熱，食客最怕包子變冷。我們把這兩種能量，合而為一。</div>
+</section>
+
+<div class="green-divider"></div>
+
+<!-- MANIFESTO -->
+<section class="manifesto-section">
+  <div class="section-label">// BRAND_MANIFESTO</div>
+  <div class="manifesto-quote">
+    重新定義<span class="accent"> 精準</span>。<br>
+    無論是<span class="dtf-accent"> 18 摺</span>的堅持，<br>
+    還是 <span class="accent">0.1ms</span> 的回應——<br>
+    都是同一種執著。
+  </div>
+  <div class="manifesto-body">
+    鼎泰豐對溫度、重量、時間的控制精確到公克與秒。Razer對每一個感測器、每一個開關的要求同樣嚴苛。這次聯名，讓兩個截然不同的世界，發現彼此對品質的共同執著。
+  </div>
+  <div class="manifesto-tags">
+    <span class="tag">PRECISION</span>
+    <span class="tag">CRAFT</span>
+    <span class="tag">PERFORMANCE</span>
+    <span class="tag">精準</span>
+    <span class="tag">工藝</span>
+    <span class="tag">效能</span>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section class="community-section">
+  <div class="section-label">// JOIN_THE_CULTURE</div>
+  <div class="section-title">FOR GAMERS.<br>FOR FOOD LOVERS.</div>
+  <div class="section-title-zh">你以為你們不同，其實你們一樣挑剔。</div>
+
+  <div class="community-grid">
+    <div class="community-card">
+      <div class="community-icon" style="color: var(--razer-green);">⌨</div>
+      <div class="community-label">GAMERS</div>
+      <div class="community-label-zh">電競玩家</div>
+    </div>
+    <div class="community-card">
+      <div class="community-icon" style="color: var(--dtf-gold);">◉</div>
+      <div class="community-label">FOODIES</div>
+      <div class="community-label-zh">老饕食客</div>
+    </div>
+    <div class="community-card">
+      <div class="community-icon" style="color: var(--razer-green);">▶</div>
+      <div class="community-label">MAKERS</div>
+      <div class="community-label-zh">創作者</div>
+    </div>
+    <div class="community-card">
+      <div class="community-icon" style="color: var(--dtf-gold);">★</div>
+      <div class="community-label">COLLECTORS</div>
+      <div class="community-label-zh">收藏家</div>
+    </div>
+  </div>
+
+  <a href="#drop" class="join-btn">JOIN THE CULTURE ›</a>
+</section>
+
+<!-- LIMITED DROP -->
+<section class="drop-section" id="drop">
+  <div class="drop-bg-text">DROP</div>
+  <div class="drop-badge">● LIVE NOW — 限量釋出</div>
+  <div class="section-label">// LIMITED_DROP</div>
+  <div class="section-title" style="font-size: 36px;">LIMITED<br><span style="color: var(--razer-green);">DROP</span></div>
+  <div class="section-title-zh">限量釋出 · 全球同步</div>
+
+  <div class="drop-products">
+    <div class="drop-thumb">
+      <svg viewBox="0 0 60 60" fill="none">
+        <rect x="8" y="22" width="44" height="32" rx="2" fill="#0A1A0A" stroke="rgba(0,255,65,0.4)" stroke-width="0.8"/>
+        <rect x="6" y="16" width="48" height="10" rx="1.5" fill="#0D1A0D" stroke="rgba(0,255,65,0.5)" stroke-width="0.8"/>
+        <path d="M20 16 C19 10 21 7 20 2" stroke="rgba(0,255,65,0.4)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M30 15 C29 8 31 5 30 0" stroke="rgba(0,255,65,0.5)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M40 16 C39 10 41 7 40 2" stroke="rgba(0,255,65,0.4)" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="30" cy="38" r="7" fill="none" stroke="rgba(0,255,65,0.3)" stroke-width="0.8" stroke-dasharray="2 2"/>
+        <circle cx="30" cy="38" r="2" fill="rgba(0,255,65,0.5)"/>
+      </svg>
+    </div>
+    <div class="drop-thumb">
+      <svg viewBox="0 0 60 60" fill="none">
+        <path d="M30 10 C20 10 12 18 12 28 C12 38 18 46 30 48 C42 46 48 38 48 28 C48 18 40 10 30 10Z" fill="#0A1A0A" stroke="rgba(0,255,65,0.4)" stroke-width="0.8"/>
+        <path d="M30 10 C28.5 16 28.5 22 29.5 28" stroke="rgba(0,255,65,0.5)" stroke-width="0.7" fill="none"/>
+        <path d="M30 10 C31.5 16 31.5 22 30.5 28" stroke="rgba(0,255,65,0.5)" stroke-width="0.7" fill="none"/>
+        <ellipse cx="30" cy="11" rx="3" ry="2" fill="#141F14" stroke="rgba(0,255,65,0.6)" stroke-width="0.8"/>
+        <rect x="27" y="28" width="6" height="9" rx="3" fill="none" stroke="rgba(0,255,65,0.4)" stroke-width="0.7"/>
+        <ellipse cx="30" cy="48" rx="14" ry="3" fill="rgba(0,255,65,0.1)"/>
+      </svg>
+    </div>
+    <div class="drop-thumb">
+      <svg viewBox="0 0 60 60" fill="none">
+        <path d="M14 28 C14 18 20 10 30 10 C40 10 46 18 46 28" fill="none" stroke="rgba(0,255,65,0.4)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="10" cy="34" r="10" fill="#0A1A0A" stroke="rgba(0,255,65,0.35)" stroke-width="0.8"/>
+        <circle cx="10" cy="34" r="6.5" fill="#080F08" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+        <path d="M5 32 L15 32 M5 34 L15 34 M5 36 L15 36" stroke="rgba(0,255,65,0.12)" stroke-width="0.5"/>
+        <circle cx="10" cy="24" r="2.5" fill="none" stroke="rgba(0,255,65,0.5)" stroke-width="0.8"/>
+        <circle cx="50" cy="34" r="10" fill="#0A1A0A" stroke="rgba(0,255,65,0.35)" stroke-width="0.8"/>
+        <circle cx="50" cy="34" r="6.5" fill="#080F08" stroke="rgba(0,255,65,0.2)" stroke-width="0.5"/>
+        <path d="M45 32 L55 32 M45 34 L55 34 M45 36 L55 36" stroke="rgba(0,255,65,0.12)" stroke-width="0.5"/>
+        <circle cx="50" cy="24" r="2.5" fill="none" stroke="rgba(0,255,65,0.5)" stroke-width="0.8"/>
+      </svg>
+    </div>
+  </div>
+
+  <a href="#" class="preorder-btn">
+    PRE-ORDER NOW
+    <span style="font-size: 20px;">›</span>
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logos">
+    <span class="footer-logo-razer">RAZER</span>
+    <span class="footer-x">×</span>
+    <span class="footer-logo-dtf">鼎泰豐</span>
+  </div>
+  <div class="footer-copy">
+    效能饗宴系列 · PERFORMANCE FEAST<br>
+    LIMITED COLLECTION 2025<br>
+    © RAZER INC × DIN TAI FUNG
+  </div>
+</footer>
+
+<script>
+  // Smooth anchor scrolling
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Intersection Observer for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.product-card, .folds-stat, .community-card, .split-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+
+  // Glitch the hero title randomly
+  const glitchEl = document.querySelector('.glitch');
+  setInterval(() => {
+    glitchEl.style.textShadow = `${Math.random()*6-3}px 0 rgba(0,255,65,0.8), ${Math.random()*6-3}px 0 rgba(212,0,10,0.5)`;
+    setTimeout(() => { glitchEl.style.textShadow = 'none'; }, 80);
+  }, 3500);
+</script>
+</body>
+</html>
