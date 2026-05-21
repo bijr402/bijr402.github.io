@@ -1,1115 +1,205 @@
-python3 << 'PYEOF'
-import json
-
-with open('/home/claude/imgs.json') as f:
-    imgs = json.load(f)
-
-# Build the full HTML
-html = '''<!DOCTYPE html>
-<html lang="zh-TW">
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>RAZER × 鼎泰豐 — 效能饗宴</title>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;700;900&family=Share+Tech+Mono&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --razer-red: #C8102E;
-  --razer-red-dim: #A00C24;
-  --razer-red-glow: rgba(200,16,46,0.25);
-  --razer-red-glow2: rgba(200,16,46,0.1);
-  --dtf-red: #C8102E;
-  --dtf-gold: #C9A84C;
-  --black: #000000;
-  --dark: #0A0A0A;
-  --dark2: #111111;
-  --dark3: #1A1A1A;
-  --gray: #888;
-  --white: #F5F5F0;
-}
-html { scroll-behavior: smooth; }
-body {
-  background: var(--black);
-  color: var(--white);
-  font-family: 'Noto Sans TC', sans-serif;
-  max-width: 430px;
-  margin: 0 auto;
-  overflow-x: hidden;
-}
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* ===== NAV ===== */
-nav {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  z-index: 1000;
-  background: rgba(0,0,0,0.92);
-  border-bottom: 1px solid rgba(200,16,46,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  backdrop-filter: blur(12px);
-}
-.nav-logos {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 3px;
-  color: var(--white);
-}
-.nav-logos .x-mark { color: var(--gray); font-size: 12px; }
-.nav-logos .dtf-text {
-  color: var(--dtf-red);
-  font-family: 'Noto Sans TC', sans-serif;
-  font-weight: 900;
-  font-size: 13px;
-  letter-spacing: 1px;
-}
-.nav-razer-logo {
-  width: 26px; height: 26px;
-}
-.nav-right { display: flex; align-items: center; gap: 16px; }
-.hamburger-btn {
-  background: none; border: none; cursor: pointer;
-  display: flex; flex-direction: column; gap: 5px; padding: 4px;
-}
-.hamburger-btn span {
-  display: block; width: 22px; height: 2px;
-  background: var(--white); border-radius: 1px;
-  transition: all 0.3s;
-}
-.hamburger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger-btn.open span:nth-child(2) { opacity: 0; }
-.hamburger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-.nav-bag {
-  width: 20px; height: 20px; stroke: var(--white); fill: none; cursor: pointer;
-}
-
-/* ===== DROPDOWN MENU ===== */
-.nav-menu {
-  position: fixed;
-  top: 56px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  background: rgba(5,5,5,0.97);
-  border-bottom: 1px solid rgba(200,16,46,0.3);
-  z-index: 999;
-  display: none;
-  flex-direction: column;
-  backdrop-filter: blur(20px);
-}
-.nav-menu.open { display: flex; }
-.nav-menu a {
-  display: block;
-  padding: 18px 28px;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 3px;
-  color: var(--white);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  transition: color 0.2s, padding-left 0.2s;
-}
-.nav-menu a:hover { color: var(--razer-red); padding-left: 36px; }
-
-/* ===== CART MODAL ===== */
-.cart-modal {
-  display: none; position: fixed; inset: 0; z-index: 2000;
-  background: rgba(0,0,0,0.7); align-items: center; justify-content: center;
-}
-.cart-modal.open { display: flex; }
-.cart-inner {
-  background: var(--dark2);
-  border: 1px solid rgba(200,16,46,0.3);
-  padding: 36px 28px;
-  max-width: 340px; width: 90%;
-  text-align: center;
-}
-.cart-inner p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
-.cart-inner h3 { font-family: 'Rajdhani', sans-serif; font-size: 18px; letter-spacing: 2px; margin-bottom: 14px; color: var(--white); }
-.cart-close {
-  margin-top: 20px; background: transparent; border: 1px solid rgba(255,255,255,0.2);
-  color: var(--gray); padding: 10px 28px; cursor: pointer; font-family: 'Rajdhani', sans-serif;
-  letter-spacing: 2px; font-size: 13px; transition: border-color 0.2s;
-}
-.cart-close:hover { border-color: var(--razer-red); color: var(--white); }
-
-/* ===== PREORDER MODAL ===== */
-.preorder-modal {
-  display: none; position: fixed; inset: 0; z-index: 2000;
-  background: rgba(0,0,0,0.75); align-items: center; justify-content: center;
-}
-.preorder-modal.open { display: flex; }
-.preorder-inner {
-  background: var(--dark2);
-  border: 1px solid rgba(200,16,46,0.4);
-  padding: 40px 28px;
-  max-width: 320px; width: 90%;
-  text-align: center;
-}
-.preorder-check {
-  width: 64px; height: 64px;
-  border: 2px solid var(--razer-red);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 20px;
-  font-size: 28px; color: var(--razer-red);
-}
-.preorder-inner h3 {
-  font-family: 'Rajdhani', sans-serif; font-size: 20px; letter-spacing: 2px;
-  color: var(--white); margin-bottom: 10px;
-}
-.preorder-inner p { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.8; margin-bottom: 24px; }
-.preorder-confirm {
-  background: var(--razer-red); color: var(--white); border: none;
-  padding: 14px 40px; font-family: 'Rajdhani', sans-serif;
-  font-weight: 700; font-size: 14px; letter-spacing: 3px; cursor: pointer;
-  transition: background 0.2s;
-}
-.preorder-confirm:hover { background: var(--razer-red-dim); }
-
-/* ===== PRODUCT TOOLTIP ===== */
-.product-tooltip {
-  display: none; position: absolute; bottom: -1px; left: 0; right: 0;
-  background: rgba(200,16,46,0.92); padding: 10px 16px; z-index: 5;
-  text-align: center;
-}
-.product-tooltip.show { display: block; }
-.product-tooltip-name {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px;
-  letter-spacing: 2px; color: var(--white);
-}
-.product-tooltip-zh { font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 2px; }
-
-/* ===== HERO ===== */
-.hero {
-  min-height: 100svh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 0 60px;
-  overflow: hidden;
-}
-.hero-bg {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 60% 35%, rgba(200,16,46,0.1) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 50% 30%, rgba(200,16,46,0.06) 0%, transparent 60%),
-    var(--black);
-}
-.hero-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(200,16,46,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,16,46,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
-}
-.hero-scene {
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 280px;
-  height: 280px;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-}
-.hero-bun-img {
-  width: 220px;
-  position: relative; z-index: 2;
-  animation: floatDumpling 4s ease-in-out infinite;
-  filter: drop-shadow(0 0 30px rgba(200,16,46,0.5)) drop-shadow(0 10px 30px rgba(0,0,0,0.8));
-}
-.hero-base-img {
-  width: 200px;
-  position: relative; z-index: 1;
-  margin-top: -20px;
-  filter: drop-shadow(0 5px 20px rgba(200,16,46,0.4));
-}
-.hero-smoke {
-  position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 200px; height: 120px;
-  pointer-events: none; z-index: 3;
-}
-.smoke-particle {
-  position: absolute;
-  width: 30px; height: 30px;
-  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: smokeRise 4s ease-in-out infinite;
-}
-.smoke-particle:nth-child(1) { left: 40%; animation-delay: 0s; }
-.smoke-particle:nth-child(2) { left: 55%; animation-delay: 1.3s; width: 20px; height: 20px; }
-.smoke-particle:nth-child(3) { left: 30%; animation-delay: 2.6s; width: 25px; height: 25px; }
-@keyframes smokeRise {
-  0% { opacity: 0; transform: translateY(60px) scale(0.5); }
-  40% { opacity: 0.6; }
-  100% { opacity: 0; transform: translateY(-20px) scale(1.5); }
-}
-@keyframes floatDumpling {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-16px); }
-}
-.hero-content { position: relative; z-index: 2; padding: 0 24px; }
-.hero-eyebrow {
-  font-family: 'Share Tech Mono', monospace; font-size: 11px;
-  letter-spacing: 4px; color: var(--razer-red); margin-bottom: 12px; opacity: 0.9;
-}
-.hero-title {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 44px; line-height: 0.95; letter-spacing: -1px;
-  color: var(--white); margin-bottom: 8px;
-}
-.hero-title .red-text { color: var(--razer-red); }
-
-@keyframes titleGlitch {
-  0%, 94% { text-shadow: none; }
-  95% { text-shadow: 3px 0 rgba(200,16,46,0.8), -2px 0 rgba(0,200,50,0.3); }
-  96% { text-shadow: -3px 0 rgba(200,16,46,0.8), 2px 0 rgba(0,200,50,0.3); }
-  97% { text-shadow: none; }
-  98% { text-shadow: 2px 0 rgba(200,16,46,0.6); }
-  99%, 100% { text-shadow: none; }
-}
-.glitch { animation: titleGlitch 4s infinite; }
-
-.hero-subtitle-zh {
-  font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-  font-size: 22px; color: var(--dtf-gold); letter-spacing: 4px; margin-bottom: 14px;
-}
-.hero-desc {
-  font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 28px; letter-spacing: 0.5px;
-}
-.hero-cta { display: flex; gap: 12px; }
-.btn-primary {
-  flex: 1; background: var(--razer-red); color: var(--white);
-  border: none; padding: 14px 0;
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 14px;
-  letter-spacing: 3px; cursor: pointer; text-decoration: none;
-  display: flex; align-items: center; justify-content: center;
-  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  transition: background 0.2s;
-}
-.btn-primary:hover { background: var(--razer-red-dim); }
-.btn-secondary {
-  flex: 1; background: transparent; color: var(--white);
-  border: 1px solid rgba(255,255,255,0.25); padding: 14px 0;
-  font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 14px;
-  letter-spacing: 3px; cursor: pointer; text-decoration: none;
-  display: flex; align-items: center; justify-content: center;
-  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  transition: border-color 0.2s, color 0.2s;
-}
-.btn-secondary:hover { border-color: var(--razer-red); color: var(--razer-red); }
-
-.scroll-hint {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  margin-top: 28px;
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  letter-spacing: 3px; color: rgba(255,255,255,0.3);
-}
-.scroll-line {
-  width: 1px; height: 40px;
-  background: linear-gradient(to bottom, rgba(200,16,46,0.8), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-/* ===== SECTIONS ===== */
-section { padding: 60px 24px; }
-.section-label {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 4px; color: var(--razer-red); margin-bottom: 8px; opacity: 0.7;
-}
-.section-title {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 30px; line-height: 1; letter-spacing: -0.5px; margin-bottom: 6px;
-}
-.section-title-zh {
-  font-family: 'Noto Sans TC', sans-serif; font-weight: 700;
-  font-size: 16px; color: var(--dtf-gold); letter-spacing: 3px; margin-bottom: 20px;
-}
-.red-divider {
-  height: 1px;
-  background: linear-gradient(to right, transparent, rgba(200,16,46,0.6), transparent);
-  margin: 0;
-}
-
-/* ===== SPLIT SECTION ===== */
-.split-section { background: var(--dark); padding: 0; overflow: hidden; }
-.split-brand-image {
-  width: 100%; display: block;
-}
-.split-center {
-  background: var(--dark2); padding: 28px 24px; text-align: center;
-  border-top: 1px solid rgba(200,16,46,0.2); border-bottom: 1px solid rgba(200,16,46,0.2);
-}
-.split-tagline {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 22px; letter-spacing: 4px; color: var(--white); margin-bottom: 4px;
-}
-.split-tagline-zh {
-  font-family: 'Noto Sans TC', sans-serif; font-size: 13px;
-  color: rgba(255,255,255,0.4); letter-spacing: 3px;
-}
-
-/* ===== FOLDS SECTION ===== */
-.folds-section { background: var(--black); position: relative; overflow: hidden; }
-.folds-bg-num {
-  position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 200px;
-  color: rgba(200,16,46,0.04); line-height: 1; pointer-events: none; user-select: none;
-}
-.folds-bun-wrap {
-  width: 180px; margin: 24px auto; display: block; position: relative;
-}
-.folds-bun-img {
-  width: 100%;
-  border-radius: 50%;
-  filter: drop-shadow(0 0 20px rgba(200,16,46,0.3));
-  animation: floatDumpling 4s ease-in-out infinite;
-}
-.folds-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-  background: rgba(200,16,46,0.15); margin-top: 32px;
-}
-.folds-stat { background: var(--dark); padding: 20px 16px; }
-.folds-stat-num {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 32px; color: var(--razer-red); line-height: 1; margin-bottom: 4px;
-}
-.folds-stat-label { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
-
-/* ===== PRODUCTS ===== */
-.products-section { background: var(--dark); padding: 60px 0 60px; }
-.products-header { padding: 0 24px 24px; }
-.products-header-title {
-  font-family: 'Cinzel', serif; font-weight: 900;
-  font-size: 22px; letter-spacing: 4px;
-  background: linear-gradient(135deg, #C9A84C 0%, #F0D080 40%, #C9A84C 60%, #8B6914 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 4px;
-}
-.products-scroll { padding: 0 24px; display: flex; flex-direction: column; gap: 20px; }
-.product-card {
-  background: var(--dark2); border: 1px solid rgba(200,16,46,0.15);
-  overflow: hidden; position: relative; cursor: pointer;
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-  transition: border-color 0.3s;
-}
-.product-card:hover { border-color: rgba(200,16,46,0.5); }
-.product-card-corner {
-  position: absolute; top: 0; right: 0; width: 16px; height: 16px;
-}
-.product-img-area {
-  height: 200px; background: var(--dark3);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.product-img-area::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at center, rgba(200,16,46,0.08) 0%, transparent 70%);
-}
-.product-img-actual {
-  width: 100%; height: 100%; object-fit: cover; object-position: center;
-  position: relative; z-index: 1;
-}
-.product-tag {
-  position: absolute; top: 12px; left: 12px;
-  background: var(--razer-red); color: var(--white);
-  font-family: 'Share Tech Mono', monospace; font-size: 9px;
-  letter-spacing: 2px; padding: 3px 8px; font-weight: 700; z-index: 2;
-}
-.product-body { padding: 18px 20px 20px; }
-.product-name-en {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 18px; letter-spacing: 1px; color: var(--white); margin-bottom: 2px;
-}
-.product-name-zh {
-  font-family: 'Noto Sans TC', sans-serif; font-size: 12px;
-  color: var(--dtf-gold); letter-spacing: 2px; margin-bottom: 10px;
-}
-.product-desc {
-  font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 14px;
-}
-.product-spec { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.spec-pill {
-  font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 1px;
-  color: var(--razer-red); border: 1px solid rgba(200,16,46,0.35); padding: 3px 8px;
-}
-.product-view {
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'Rajdhani', sans-serif; font-weight: 600;
-  font-size: 13px; letter-spacing: 2px; color: var(--razer-red);
-  cursor: pointer; text-decoration: none; transition: gap 0.2s;
-}
-.product-view:hover { gap: 10px; }
-.product-view-arrow { font-size: 16px; }
-
-/* ===== HEAT SECTION ===== */
-.heat-section {
-  background: var(--black); text-align: center;
-  position: relative; overflow: hidden; padding: 80px 24px;
-}
-.heat-visual {
-  position: relative; margin: 40px auto; width: 220px; height: 220px;
-}
-.heat-circle {
-  position: absolute; border-radius: 50%; border: 1px solid;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
-  animation: heatPulse 3s ease-in-out infinite;
-}
-.heat-circle:nth-child(1) { width: 80px; height: 80px; border-color: rgba(200,16,46,0.9); animation-delay: 0s; }
-.heat-circle:nth-child(2) { width: 120px; height: 120px; border-color: rgba(200,16,46,0.6); animation-delay: 0.5s; }
-.heat-circle:nth-child(3) { width: 160px; height: 160px; border-color: rgba(200,16,46,0.35); animation-delay: 1s; }
-.heat-circle:nth-child(4) { width: 200px; height: 200px; border-color: rgba(200,16,46,0.18); animation-delay: 1.5s; }
-@keyframes heatPulse {
-  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
-}
-.heat-temp {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;
-}
-.heat-temp-num {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 34px; color: var(--razer-red); line-height: 1;
-}
-.heat-temp-unit {
-  font-family: 'Share Tech Mono', monospace; font-size: 11px;
-  color: rgba(255,255,255,0.4); letter-spacing: 2px;
-}
-.heat-title {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 32px; letter-spacing: 1px; line-height: 1.1; margin-bottom: 8px;
-}
-.heat-title span { color: var(--razer-red); }
-.heat-zh {
-  font-family: 'Noto Sans TC', sans-serif; font-size: 14px;
-  color: rgba(255,255,255,0.4); letter-spacing: 4px; margin-bottom: 20px;
-}
-.heat-desc {
-  font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.9;
-  max-width: 360px; margin: 0 auto;
-  font-family: 'Noto Sans TC', sans-serif; font-weight: 300;
-}
-
-/* ===== VIDEO PLAYER ===== */
-.video-section {
-  background: var(--dark2); padding: 60px 0; overflow: hidden;
-}
-.video-section-inner { padding: 0 24px; }
-.video-player-wrap {
-  position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
-  background: var(--black); margin-top: 24px; cursor: pointer;
-  border: 1px solid rgba(200,16,46,0.2);
-  overflow: hidden;
-}
-.video-cover {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 2; transition: opacity 0.3s;
-}
-.video-cover img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center;
-}
-.video-play-btn {
-  position: absolute; z-index: 3;
-  width: 64px; height: 64px;
-  background: rgba(200,16,46,0.9);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 0 30px rgba(200,16,46,0.5);
-}
-.video-play-btn:hover { transform: scale(1.1); background: var(--razer-red); }
-.video-play-btn svg { width: 24px; height: 24px; fill: white; margin-left: 4px; }
-.video-cover.hidden { opacity: 0; pointer-events: none; }
-.video-element {
-  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-}
-
-/* ===== MANIFESTO ===== */
-.manifesto-section {
-  background: var(--dark); padding: 70px 24px; position: relative; overflow: hidden;
-}
-.manifesto-section::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: linear-gradient(to bottom, transparent, var(--razer-red), transparent);
-}
-.manifesto-quote {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 26px; line-height: 1.4; margin-bottom: 24px;
-  letter-spacing: 0px;
-}
-.manifesto-quote .accent { color: var(--razer-red); }
-.manifesto-quote .dtf-accent { color: var(--dtf-gold); }
-.manifesto-body {
-  font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.8; margin-bottom: 28px;
-}
-.manifesto-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.tag {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 1px; color: rgba(255,255,255,0.5);
-  border: 1px solid rgba(255,255,255,0.15); padding: 5px 12px;
-}
-.tag-emphasis {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 1px; color: var(--white);
-  border: 1px solid rgba(200,16,46,0.5);
-  padding: 5px 12px; background: rgba(200,16,46,0.1);
-}
-
-/* ===== COMMUNITY ===== */
-.community-section { background: var(--black); padding: 60px 24px; }
-.community-section-title-zh { font-size: 15px; color: var(--white); letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; }
-.community-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px;
-}
-.community-card {
-  background: var(--dark2); border: 1px solid rgba(255,255,255,0.06);
-  padding: 20px 16px; transition: border-color 0.3s;
-}
-.community-card:hover { border-color: rgba(200,16,46,0.4); }
-.community-icon { font-size: 24px; margin-bottom: 10px; }
-.community-label {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 14px; letter-spacing: 2px; color: var(--white); margin-bottom: 2px;
-}
-.community-label-zh { font-size: 11px; color: var(--gray); letter-spacing: 1px; }
-.join-btn {
-  display: block; text-align: center; padding: 14px 0;
-  border: 1px solid rgba(200,16,46,0.4); color: var(--white);
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 13px; letter-spacing: 4px; text-decoration: none;
-  transition: background 0.2s, border-color 0.2s;
-}
-.join-btn:hover { background: rgba(200,16,46,0.1); border-color: var(--razer-red); }
-
-/* ===== LIMITED DROP ===== */
-.drop-section { background: var(--dark); padding: 70px 24px; position: relative; overflow: hidden; }
-.drop-bg-text {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 160px;
-  color: rgba(200,16,46,0.03); line-height: 1; pointer-events: none; user-select: none;
-  white-space: nowrap;
-}
-.drop-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  letter-spacing: 3px; color: var(--razer-red);
-  border: 1px solid rgba(200,16,46,0.4); padding: 4px 12px; margin-bottom: 20px;
-}
-.drop-products {
-  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 28px 0;
-}
-.drop-thumb {
-  aspect-ratio: 1; background: var(--dark2); border: 1px solid rgba(255,255,255,0.06);
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
-}
-.drop-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.preorder-btn {
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--razer-red); color: var(--white);
-  padding: 18px 24px; text-decoration: none;
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 16px; letter-spacing: 4px; cursor: pointer; border: none; width: 100%;
-  transition: background 0.2s;
-}
-.preorder-btn:hover { background: var(--razer-red-dim); }
-.drop-price {
-  font-size: 12px; color: rgba(255,255,255,0.5);
-  letter-spacing: 1px; margin-top: 12px; text-align: right;
-  font-family: 'Share Tech Mono', monospace;
-}
-
-/* ===== FOOTER ===== */
-footer {
-  background: var(--black); padding: 40px 24px;
-  border-top: 1px solid rgba(200,16,46,0.15); text-align: center;
-}
-.footer-logos {
-  display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 16px;
-}
-.footer-logo-razer {
-  font-family: 'Rajdhani', sans-serif; font-weight: 700;
-  font-size: 18px; letter-spacing: 5px; color: var(--white);
-}
-.footer-x { color: var(--gray); font-size: 14px; }
-.footer-logo-dtf {
-  font-family: 'Noto Sans TC', sans-serif; font-weight: 900;
-  font-size: 16px; color: var(--dtf-red); letter-spacing: 1px;
-}
-.footer-copy {
-  font-family: 'Share Tech Mono', monospace; font-size: 10px;
-  color: rgba(255,255,255,0.25); line-height: 1.8; letter-spacing: 2px;
-}
-
-/* Fade in animation for sections */
-.fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.fade-in.visible { opacity: 1; transform: translateY(0); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼎泰豐x雷蛇Razer - 效能與美味의頂級結合</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
+        
+        :root {
+            --din-tay-fung-red: #DA291C;
+            --razer-green: #33FF33;
+            --dark-bg: #000000;
+            --secondary-dark: #1A1A1A;
+            --light-grey: #EEEEEE;
+            --neon-green-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+            --gold-accent: #D4AF37;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--dark-bg); color: var(--light-grey); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        
+        /* Typography */
+        h1, h2, h3 { color: var(--din-tay-fung-red); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .mono { font-family: 'Share Tech Mono', monospace; color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 60px 0; }
+        
+        /* Header */
+        header { background-color: var(--secondary-dark); padding: 15px 0; border-bottom: 2px solid var(--gold-accent); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-family: 'Share Tech Mono', monospace; font-weight: 700; }
+        .logo span:first-child { color: var(--din-tay-fung-red); }
+        .logo span:last-child { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        nav ul { display: flex; gap: 30px; }
+        nav a { font-size: 1.1rem; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+        nav a:hover { color: var(--razer-green); border-bottom: 2px solid var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Hero Section */
+        #hero { background: radial-gradient(circle, var(--secondary-dark) 0%, rgba(0,0,0,1) 100%); height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; position: relative; overflow: hidden; }
+        #hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(51, 255, 51, 0.05) 0%, rgba(0,0,0,0) 70%); z-index: 1; }
+        #hero .container { position: relative; z-index: 2; }
+        #hero h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
+        #hero h1 span:first-child { color: var(--din-tay-fung-red); text-shadow: 0 0 10px rgba(218, 41, 28, 0.5); }
+        #hero h1 span.separator { color: #fff; }
+        #hero h1 span.razer { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        #hero p { font-size: 1.8rem; margin-bottom: 40px; color: #fff; border-top: 1px solid rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.2); padding: 10px 0; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .btn { display: inline-block; padding: 12px 30px; background-color: var(--din-tay-fung-red); color: #fff; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; border-radius: 5px; border: 2px solid transparent; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .btn:hover { background-color: #000; border: 2px solid var(--razer-green); color: var(--razer-green); text-shadow: var(--neon-green-shadow); box-shadow: 0 0 15px rgba(51, 255, 51, 0.5); }
+        
+        /* Features Section */
+        #features { background-color: #111; }
+        #features h2 { text-align: center; font-size: 3rem; margin-bottom: 50px; position: relative; display: inline-block; left: 50%; transform: translateX(-50%); }
+        #features h2::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background-color: var(--razer-green); box-shadow: var(--neon-green-shadow); }
+        .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+        .feature-item { background-color: var(--secondary-dark); padding: 30px; border-radius: 10px; border: 1px solid #333; transition: all 0.3s ease; position: relative; }
+        .feature-item:hover { transform: translateY(-5px); border-color: rgba(51, 255, 51, 0.3); box-shadow: 0 5px 20px rgba(51, 255, 51, 0.1); }
+        .feature-item::before { content: '[DTFxRAZER_SPEC_#' + attr(data-id) + ']'; position: absolute; top: -10px; right: 20px; font-family: 'Share Tech Mono', monospace; color: var(--razer-green); background-color: #111; padding: 0 10px; font-size: 0.9rem; }
+        .feature-icon { font-size: 3rem; color: var(--razer-green); margin-bottom: 20px; text-align: center; }
+        .feature-item h3 { font-size: 1.8rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .feature-item h3 span { color: #fff; }
+        .feature-item p { font-size: 1.1rem; color: #ccc; }
+        
+        /* Fusion Showcase */
+        #fusion { background: linear-gradient(135deg, rgba(218,41,28,0.1) 0%, rgba(51,255,51,0.1) 100%); position: relative; }
+        #fusion h2 { text-align: center; font-size: 3rem; margin-bottom: 50px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .fusion-content { display: flex; align-items: center; gap: 60px; }
+        .code-block { flex: 1; background-color: var(--secondary-dark); padding: 25px; border-radius: 10px; font-family: 'Share Tech Mono', monospace; border-left: 5px solid var(--din-tay-fung-red); border-right: 5px solid var(--razer-green); position: relative; }
+        .code-block::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, var(--din-tay-fung-red), var(--razer-green)); }
+        .code-header { color: #fff; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .code-line { color: var(--light-grey); margin-bottom: 5px; display: block; }
+        .code-line span.keyword { color: #ff79c6; }
+        .code-line span.property { color: #8be9fd; }
+        .code-line span.string { color: #f1fa8c; }
+        .code-line span.red { color: var(--din-tay-fung-red); }
+        .code-line span.green { color: var(--razer-green); font-weight: bold; }
+        .fusion-image { flex: 1; text-align: center; }
+        .fusion-image-placeholder { width: 100%; height: 400px; background-color: #222; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease; }
+        .fusion-image-placeholder:hover { border-color: rgba(51, 255, 51, 0.5); background-color: #2a2a2a; }
+        .fusion-image-placeholder::after { content: '請提供 AI 生成的圖片或實際圖片。'; position: absolute; top: 10px; left: 10px; font-family: 'Share Tech Mono', monospace; color: #888; }
+        
+        /* Footer */
+        footer { background-color: #000; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #aaa; }
+        footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-logo { font-size: 1.5rem; font-family: 'Share Tech Mono', monospace; }
+        .footer-logo span:first-child { color: var(--din-tay-fung-red); }
+        .footer-logo span:last-child { color: var(--razer-green); }
+        .copyright { font-size: 0.9rem; }
+        .social-links { display: flex; gap: 20px; }
+        .social-links a:hover { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            #hero h1 { font-size: 3rem; }
+            #hero p { font-size: 1.5rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .fusion-content { flex-direction: column; }
+            .fusion-image { width: 100%; }
+        }
+    </style>
 </head>
 <body>
-
-<!-- ===== CART MODAL ===== -->
-<div class="cart-modal" id="cartModal">
-  <div class="cart-inner">
-    <h3>🛍 購物袋</h3>
-    <p>目前購物袋是空的，<br>可以看看我們的其他限量產品</p>
-    <button class="cart-close" onclick="document.getElementById('cartModal').classList.remove('open')">CLOSE 關閉</button>
-  </div>
-</div>
-
-<!-- ===== PREORDER MODAL ===== -->
-<div class="preorder-modal" id="preorderModal">
-  <div class="preorder-inner">
-    <div class="preorder-check">✓</div>
-    <h3>已預購商品！</h3>
-    <p>感謝您支持！您的限量預購已登記成功。<br>我們將於發貨前以電郵通知您。</p>
-    <button class="preorder-confirm" onclick="document.getElementById('preorderModal').classList.remove('open')">確認 CONFIRM</button>
-  </div>
-</div>
-
-<!-- ===== NAV ===== -->
-<nav>
-  <div class="nav-logos">
-    <svg class="nav-razer-logo" viewBox="0 0 40 40" fill="none">
-      <path d="M8 32 L20 8 L24 14 L14 30Z" fill="#C8102E"/>
-      <path d="M20 8 L32 32 L26 32 L20 20 L14 30 L20 8Z" fill="#C8102E" opacity="0.7"/>
-      <circle cx="20" cy="8" r="2.5" fill="#C8102E"/>
-    </svg>
-    <span>RAZER</span>
-    <span class="x-mark">×</span>
-    <span class="dtf-text">鼎泰豐</span>
-  </div>
-  <div class="nav-right">
-    <svg class="nav-bag" viewBox="0 0 24 24" onclick="document.getElementById('cartModal').classList.add('open')">
-      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke-width="1.5"/>
-      <line x1="3" y1="6" x2="21" y2="6" stroke-width="1.5"/>
-      <path d="M16 10a4 4 0 01-8 0" stroke-width="1.5"/>
-    </svg>
-    <button class="hamburger-btn" id="hamBtn" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<!-- ===== NAV MENU ===== -->
-<div class="nav-menu" id="navMenu">
-  <a href="#products" onclick="closeMenu()">產品系列</a>
-  <a href="#video" onclick="closeMenu()">客戶體驗影片</a>
-  <a href="#culture" onclick="closeMenu()">加入我們</a>
-  <a href="#drop" onclick="closeMenu()">限量預購</a>
-</div>
-
-<!-- ===== HERO ===== -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  
-  <div class="hero-scene">
-    <div class="hero-smoke">
-      <div class="smoke-particle"></div>
-      <div class="smoke-particle"></div>
-      <div class="smoke-particle"></div>
-    </div>
-    <img class="hero-bun-img" src="''' + imgs['bun'] + '''" alt="發光包子">
-    <img class="hero-base-img" src="''' + imgs['base'] + '''" alt="底座">
-  </div>
-
-  <div class="hero-content">
-    <div class="hero-eyebrow">// LIMITED_COLLECTION — 2026</div>
-    <div class="hero-title">
-      <span class="glitch">PERFORMANCE</span><br>
-      <span class="glitch">FEAST</span>
-    </div>
-    <div class="hero-subtitle-zh">效能饗宴</div>
-    <div class="hero-desc">當散熱，變成享受。<br>When Heat Becomes Flavor.</div>
-    <div class="hero-cta">
-      <a href="#" class="btn-primary" onclick="openPreorder()">ENTER EXPERIENCE</a>
-      <a href="#drop" class="btn-secondary">PRE-ORDER</a>
-    </div>
-    <div class="scroll-hint">
-      <div class="scroll-line"></div>
-      <span>SCROLL</span>
-    </div>
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== SPLIT BRAND SECTION ===== -->
-<section class="split-section">
-  <img class="split-brand-image" src="''' + imgs['split'] + '''" alt="兩種世界一種執著">
-  <div class="split-center">
-    <div class="split-tagline">CRAFT × PERFORMANCE</div>
-    <div class="split-tagline-zh">兩種世界，一種執著</div>
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== 18 FOLDS ===== -->
-<section class="folds-section">
-  <div class="folds-bg-num">18</div>
-  <div class="section-label">// PRECISION_PROTOCOL</div>
-  <div class="section-title">18 FOLDS.<br>INFINITE PRECISION.</div>
-  <div class="section-title-zh" style="margin-top:6px;">精準無限，差無誤差</div>
-  
-  <div class="folds-bun-wrap">
-    <img class="folds-bun-img" src="''' + imgs['bun'] + '''" alt="包子">
-  </div>
-
-  <div class="folds-stats fade-in">
-    <div class="folds-stat">
-      <div class="folds-stat-num">18</div>
-      <div class="folds-stat-label">精準摺數</div>
-    </div>
-    <div class="folds-stat">
-      <div class="folds-stat-num">0.1<span style="font-size:16px">ms</span></div>
-      <div class="folds-stat-label">響應用時</div>
-    </div>
-    <div class="folds-stat">
-      <div class="folds-stat-num">21g</div>
-      <div class="folds-stat-label">精準克重</div>
-    </div>
-    <div class="folds-stat">
-      <div class="folds-stat-num">±0.2<span style="font-size:16px">g</span></div>
-      <div class="folds-stat-label">精準容差</div>
-    </div>
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== PRODUCTS ===== -->
-<section class="products-section" id="products">
-  <div class="products-header">
-    <div class="section-label">// LIMITED_COLLECTION</div>
-    <div class="products-header-title">效能饗宴系列</div>
-    <div class="section-title" style="font-size:18px; letter-spacing:4px;">PERFORMANCE FEAST SERIES</div>
-  </div>
-
-  <div class="products-scroll">
-
-    <!-- PC -->
-    <div class="product-card fade-in" onclick="toggleTooltip(this)">
-      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="rgba(200,16,46,0.5)"/></svg>
-      <div class="product-tag">NEW BEST</div>
-      <div class="product-img-area">
-        <img class="product-img-actual" src="''' + imgs['pc'] + '''" alt="Steam Core Case">
-        <div class="product-tooltip" id="tt1">
-          <div class="product-tooltip-name">STEAM CORE CASE</div>
-          <div class="product-tooltip-zh">幻竹蒸氣主機箱</div>
+    <header>
+        <div class="container">
+            <a href="#" class="logo"><span>鼎泰豐</span> x <span>RAZER</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#hero">主頁</a></li>
+                    <li><a href="#features">規格</a></li>
+                    <li><a href="#fusion">融合</a></li>
+                </ul>
+            </nav>
         </div>
-      </div>
-      <div class="product-body">
-        <div class="product-name-en">STEAM CORE CASE</div>
-        <div class="product-name-zh">幻竹蒸氣主機箱</div>
-        <div class="product-desc">竹木外殼設計，蒸籠頂蓋，CPU散熱精比美廚師刀法。GTX FULL TOWER · STEAM COOLING · CHROMA RGB</div>
-        <div class="product-spec">
-          <span class="spec-pill">GTX FULL TOWER</span>
-          <span class="spec-pill">STEAM COOLING</span>
-          <span class="spec-pill">CHROMA RGB</span>
-        </div>
-        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
-      </div>
-    </div>
-
-    <!-- MOUSE -->
-    <div class="product-card fade-in" onclick="toggleTooltip(this)" style="transition-delay:0.1s">
-      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="rgba(200,16,46,0.5)"/></svg>
-      <div class="product-tag">SIGNATURE</div>
-      <div class="product-img-area">
-        <img class="product-img-actual" src="''' + imgs['mouse'] + '''" alt="Xiao Long Mouse">
-        <div class="product-tooltip" id="tt2">
-          <div class="product-tooltip-name">XIAO LONG MOUSE</div>
-          <div class="product-tooltip-zh">小籠滑鼠</div>
-        </div>
-      </div>
-      <div class="product-body">
-        <div class="product-name-en">XIAO LONG MOUSE</div>
-        <div class="product-name-zh">小籠滑鼠</div>
-        <div class="product-desc">包子造型握感，仿生材質觸感絕佳。滑鼠精準度同等廚師選料的嚴苛標準。</div>
-        <div class="product-spec">
-          <span class="spec-pill">30K DPI</span>
-          <span class="spec-pill">0.1ms</span>
-          <span class="spec-pill">58-FOLD GRIP</span>
-        </div>
-        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
-      </div>
-    </div>
-
-    <!-- HEADPHONE -->
-    <div class="product-card fade-in" onclick="toggleTooltip(this)" style="transition-delay:0.2s">
-      <svg class="product-card-corner" viewBox="0 0 16 16"><path d="M0 0 L16 0 L16 16" fill="rgba(200,16,46,0.5)"/></svg>
-      <div class="product-tag">PREMIUM</div>
-      <div class="product-img-area">
-        <img class="product-img-actual" src="''' + imgs['headphone'] + '''" alt="Sealed Audio System">
-        <div class="product-tooltip" id="tt3">
-          <div class="product-tooltip-name">SEALED AUDIO SYSTEM</div>
-          <div class="product-tooltip-zh">低延遲湯包耳機</div>
-        </div>
-      </div>
-      <div class="product-body">
-        <div class="product-name-en">SEALED AUDIO SYSTEM</div>
-        <div class="product-name-zh">低延遲湯包耳機</div>
-        <div class="product-desc">蒸籠蓋造型耳罩，完美氣密設計。如小籠包鎖住湯汁，聆聽每一個音效細節。</div>
-        <div class="product-spec">
-          <span class="spec-pill">2.4GHz</span>
-          <span class="spec-pill">SEAL-FIT</span>
-          <span class="spec-pill">THX AUDIO</span>
-        </div>
-        <a href="#drop" class="product-view">VIEW MORE <span class="product-view-arrow">›</span></a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== HEAT SECTION ===== -->
-<section class="heat-section">
-  <div class="section-label">// THERMAL_PHILOSOPHY</div>
-  <div class="heat-title">TURN <span>HEAT</span><br>INTO EXPERIENCE.</div>
-  <div class="heat-zh">把散熱，變成享受。</div>
-
-  <div class="heat-visual">
-    <div class="heat-circle"></div>
-    <div class="heat-circle"></div>
-    <div class="heat-circle"></div>
-    <div class="heat-circle"></div>
-    <div class="heat-temp">
-      <div class="heat-temp-num">88°C</div>
-      <div class="heat-temp-unit">CPU TEMP</div>
-    </div>
-  </div>
-
-  <div class="heat-desc">88°C 既象徵鼎泰豐對包子蒸製溫度的精準掌控，也巧妙連結了雷蛇硬體在高效運作下的核心溫度。這種將「食材料理」與「運算效能」完美轉譯的視覺符號，具體體現了本次聯名「將熱情（熱能）轉化為極致體驗」的核心概念。</div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== MANIFESTO ===== -->
-<section class="manifesto-section">
-  <div class="section-label">// BRAND_MANIFESTO</div>
-  <div class="manifesto-quote">
-    重新定義<span class="accent"> 精準</span>。<br>
-    無論是<span class="dtf-accent"> 18 摺</span>的堅持，<br>
-    還是 <span class="accent">0.1ms</span> 的回應——<br>
-    都是同一種執著。
-  </div>
-  <div class="manifesto-body">
-    鼎泰豐對溫度、重量、時間的控制精確到公克與秒。Razer對每一個感測器、每一個開關的要求同樣嚴苛。這次聯名，讓兩個截然不同的世界，發現彼此對品質的共同執著。
-  </div>
-  <div class="manifesto-tags">
-    <span class="tag">PRECISION</span>
-    <span class="tag">CRAFT</span>
-    <span class="tag">PERFORMANCE</span>
-    <span class="tag">精準</span>
-    <span class="tag">工藝</span>
-    <span class="tag">效能</span>
-    <span class="tag-emphasis">堅持</span>
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== VIDEO SECTION ===== -->
-<section class="video-section" id="video">
-  <div class="video-section-inner">
-    <div class="section-label">// CUSTOMER_EXPERIENCE</div>
-    <div class="section-title">影片播放器</div>
-    <div class="section-title-zh" style="margin-bottom: 0;">FOR GAMERS. FOR FOOD LOVERS.</div>
+    </header>
     
-    <div class="video-player-wrap" id="videoWrap" onclick="playVideo()">
-      <div class="video-cover" id="videoCover">
-        <img src="''' + imgs['cover'] + '''" alt="影片封面">
-        <div class="video-play-btn">
-          <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+    <section id="hero">
+        <div class="container">
+            <h1><span>鼎泰豐</span> <span class="separator">x</span> <span class="razer">雷蛇</span></h1>
+            <p>頂級工藝的美味與電競效能的結合</p>
+            <p class="mono">[歡迎體驗鼎泰豐與Razer共同研發出的頂級饗宴。]</p>
+            <a href="#features" class="btn">深入了解</a>
         </div>
-      </div>
-      <video class="video-element" id="videoEl" controls preload="none">
-        <source src="客戶體驗.mp4" type="video/mp4">
-      </video>
-    </div>
-  </div>
-</section>
-
-<div class="red-divider"></div>
-
-<!-- ===== COMMUNITY ===== -->
-<section class="community-section" id="culture">
-  <div class="section-label">// JOIN_THE_CULTURE</div>
-  <div class="section-title">FOR GAMERS.<br>FOR FOOD LOVERS.</div>
-  <div class="community-section-title-zh">你以為你們不同，其實你們一樣挑剔。</div>
-
-  <div class="community-grid">
-    <div class="community-card fade-in">
-      <div class="community-icon" style="color: #F5C518;">⌨</div>
-      <div class="community-label">GAMERS</div>
-      <div class="community-label-zh">電競玩家</div>
-    </div>
-    <div class="community-card fade-in" style="transition-delay:0.1s">
-      <div class="community-icon" style="color: var(--dtf-gold);">◉</div>
-      <div class="community-label">FOODIES</div>
-      <div class="community-label-zh">老饕食客</div>
-    </div>
-    <div class="community-card fade-in" style="transition-delay:0.2s">
-      <div class="community-icon" style="color: var(--razer-red);">▶</div>
-      <div class="community-label">MAKERS</div>
-      <div class="community-label-zh">創作者</div>
-    </div>
-    <div class="community-card fade-in" style="transition-delay:0.3s">
-      <div class="community-icon" style="color: var(--razer-red);">★</div>
-      <div class="community-label">COLLECTORS</div>
-      <div class="community-label-zh">收藏家</div>
-    </div>
-  </div>
-
-  <a href="#drop" class="join-btn">JOIN THE CULTURE ›</a>
-</section>
-
-<!-- ===== LIMITED DROP ===== -->
-<section class="drop-section" id="drop">
-  <div class="drop-bg-text">DROP</div>
-  <div class="drop-badge">● LIVE NOW — 限量釋出</div>
-  <div class="section-label">// LIMITED_DROP</div>
-  <div class="section-title" style="font-size: 36px;">LIMITED<br><span style="color: var(--razer-red);">DROP</span></div>
-  <div class="section-title-zh">限量釋出 · 全球同步</div>
-
-  <div class="drop-products">
-    <div class="drop-thumb"><img src="''' + imgs['pc'] + '''" alt="主機"></div>
-    <div class="drop-thumb"><img src="''' + imgs['mouse'] + '''" alt="滑鼠"></div>
-    <div class="drop-thumb"><img src="''' + imgs['headphone'] + '''" alt="耳機"></div>
-  </div>
-
-  <button class="preorder-btn" onclick="openPreorder()">
-    PRE-ORDER NOW
-    <span style="font-size: 20px;">›</span>
-  </button>
-  <div class="drop-price">全套限量組合 TWD 1,888</div>
-</section>
-
-<!-- ===== FOOTER ===== -->
-<footer>
-  <div class="footer-logos">
-    <span class="footer-logo-razer">RAZER</span>
-    <span class="footer-x">×</span>
-    <span class="footer-logo-dtf">鼎泰豐</span>
-  </div>
-  <div class="footer-copy">
-    效能饗宴系列 · PERFORMANCE FEAST<br>
-    LIMITED COLLECTION 2026<br>
-    © RAZER INC × DIN TAI FUNG
-  </div>
-</footer>
-
-<script>
-// Menu
-function toggleMenu() {
-  const menu = document.getElementById('navMenu');
-  const btn = document.getElementById('hamBtn');
-  menu.classList.toggle('open');
-  btn.classList.toggle('open');
-}
-function closeMenu() {
-  document.getElementById('navMenu').classList.remove('open');
-  document.getElementById('hamBtn').classList.remove('open');
-}
-
-// Preorder modal
-function openPreorder(e) {
-  if (e) e.preventDefault();
-  document.getElementById('preorderModal').classList.add('open');
-}
-document.querySelectorAll('.preorder-btn, [href="#drop"].btn-secondary').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    if (this.classList.contains('preorder-btn')) {
-      e.preventDefault();
-      openPreorder();
-    }
-  });
-});
-
-// Product tooltip toggle
-function toggleTooltip(card) {
-  const tt = card.querySelector('.product-tooltip');
-  const allTts = document.querySelectorAll('.product-tooltip');
-  allTts.forEach(t => { if (t !== tt) t.classList.remove('show'); });
-  tt.classList.toggle('show');
-}
-
-// Video player
-function playVideo() {
-  const cover = document.getElementById('videoCover');
-  const video = document.getElementById('videoEl');
-  cover.classList.add('hidden');
-  video.play();
-}
-
-// Smooth anchor scroll
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const id = a.getAttribute('href');
-    if (id === '#') return;
-    const target = document.querySelector(id);
-    if (target) {
-      e.preventDefault();
-      closeMenu();
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-});
-
-// Intersection observer for fade-in
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// Glitch hero title
-const glitchEls = document.querySelectorAll('.glitch');
-setInterval(() => {
-  glitchEls.forEach(el => {
-    el.style.textShadow = `${Math.random()*6-3}px 0 rgba(200,16,46,0.8), ${Math.random()*6-3}px 0 rgba(0,200,50,0.2)`;
-    setTimeout(() => { el.style.textShadow = 'none'; }, 80);
-  });
-}, 3500);
-</script>
+    </section>
+    
+    <section id="features">
+        <div class="container">
+            <h2>融合<span>規格</span></h2>
+            <div class="feature-grid">
+                <div class="feature-item" data-id="1">
+                    <div class="feature-icon">🥟</div>
+                    <h3><span>雷蛇</span> RGB <span>小籠包</span></h3>
+                    <p>利用 Razer Chroma 技術，每一顆小籠包都擁有 1680 萬色 RGB 燈效。燈效將隨著品嚐時間及美味程度進行呼吸般律動。</p>
+                </div>
+                <div class="feature-item" data-id="2">
+                    <div class="feature-icon">🌿</div>
+                    <h3><span>雷蛇</span> 智慧 <span>醬醋</span> 系統</h3>
+                    <p>由 Nari Ultimate 團隊研發的智慧感測系統，精準分析每一口所需要的醬油與醋的比例，讓美味體驗達到巔峰。</p>
+                </div>
+                <div class="feature-item" data-id="3">
+                    <div class="feature-icon">🔥</div>
+                    <h3><span>雷蛇</span> HyperScale <span>蒸籠</span> 溫控</h3>
+                    <p>搭載 64 位元核心處理器及 7 根熱導管，利用 Viper 級溫控演算法，確保每一格蒸籠溫度精準控制在 118.5°C 完美狀態。</p>
+                </div>
+                <div class="feature-item" data-id="4">
+                    <div class="feature-icon">⚔️</div>
+                    <h3><span>雷蛇</span> Mek-Anical <span>筷子</span> 2.0</h3>
+                    <p>採用 Razer 機械式按鍵技術，提供無與倫比的敲擊手感。筷尖感測器可精準控制夾取力度，保證不讓美味漏掉。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="fusion">
+        <div class="container">
+            <h2>融合<span>的奧秘</span></h2>
+            <div class="fusion-content">
+                <div class="code-block">
+                    <div class="code-header">/// 鼎泰豐 x RAZER 融合代碼 ///</div>
+                    <code class="code-line"><span class="keyword">function</span> calculateDeliciousness( <span class="property">xiaolongbao_type</span>, <span class="property">razer_chroma</span> ) {</div>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> base_deliciousness = <span class="red">100</span>; <span class="comment">// 鼎泰豐美味基底</span></code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> r_g_b_factor = <span class="green">razer_chroma.active</span> ? <span class="green">1.5</span> : <span class="red">1.0</span>; <span class="comment">// 雷蛇RGB加成</span></code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">return</span> base_deliciousness * r_g_b_factor;</div>
+                    <code class="code-line">}</code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="keyword">class</span> FusionProduct {</code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">constructor</span>( <span class="property">name</span> ) {</code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">name</span> = <span class="string">'[DTFxRAZER]'</span> + <span class="property">name</span>;</code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">color</span> = [<span class="red">'紅'</span>, <span class="green">'綠'</span>]; <span class="comment">// 美味與效能的顏色</span></code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">deliciousness</span> = <span class="red">999</span>; <span class="comment">// 超越人類極限的美味</span></code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">fps</span> = <span class="green">240</span>; <span class="comment">// 品嚐時美味以每秒240張傳輸</span></code>
+                    <code class="code-line">&nbsp;&nbsp;}</code>
+                    <code class="code-line">}</code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="comment">// 啟動融合協議...</span></code>
+                    <code class="code-line"><span class="comment">// [WARNING] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"><span class="comment">// [WARNING] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"><span class="comment">// [SUCCESS] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="comment">// 歡迎體驗鼎泰豐與雷蛇共同研發出的頂級饗宴。</span></code>
+                    <code class="code-line"><span class="comment">// 請提供 AI 生成的圖片或實際圖片。</span></code>
+                </div>
+                <div class="fusion-image">
+                    <div class="fusion-image-placeholder">
+                        AI 生成圖片展示區
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-logo"><span>鼎泰豐</span> x <span>RAZER</span></div>
+            <div class="copyright">&copy; 2026 鼎泰豐. 所有權利均由鼎泰豐與雷蛇所有。</div>
+            <div class="social-links mono">
+                [鼎泰豐_official] | [Razer_official]
+            </div>
+        </div>
+    </footer>
 </body>
-</html>'''
-
-with open('/mnt/user-data/outputs/razer_dtf_v3.html', 'w', encoding='utf-8') as f:
-    f.write(html)
-
-print(f"Done! File size: {len(html)} bytes = {len(html)//1024}KB")
-PYEOF 
+</html>
