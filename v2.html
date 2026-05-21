@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼎泰豐x雷蛇Razer - 效能與美味頂級結合</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
+        
+        :root {
+            --din-tay-fung-red: #DA291C;
+            --razer-green: #33FF33;
+            --dark-bg: #000000;
+            --secondary-dark: #1A1A1A;
+            --light-grey: #EEEEEE;
+            --neon-green-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+            --gold-accent: #D4AF37;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--dark-bg); color: var(--light-grey); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        
+        /* Typography */
+        h1, h2, h3 { color: var(--din-tay-fung-red); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .mono { font-family: 'Share Tech Mono', monospace; color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 60px 0; }
+        
+        /* Header */
+        header { background-color: var(--secondary-dark); padding: 15px 0; border-bottom: 2px solid var(--gold-accent); position: fixed; width: 100%; top: 0; z-index: 1000; }
+        header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-family: 'Share Tech Mono', monospace; font-weight: 700; }
+        .logo span:first-child { color: var(--din-tay-fung-red); }
+        .logo span:last-child { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        nav ul { display: flex; gap: 30px; }
+        nav a { font-size: 1.1rem; transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+        nav a:hover { color: var(--razer-green); border-bottom: 2px solid var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Hero Section */
+        #hero { background: radial-gradient(circle, var(--secondary-dark) 0%, rgba(0,0,0,1) 100%); height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: 80px; position: relative; overflow: hidden; }
+        #hero::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(51, 255, 51, 0.05) 0%, rgba(0,0,0,0) 70%); z-index: 1; }
+        #hero .container { position: relative; z-index: 2; }
+        #hero h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
+        #hero h1 span:first-child { color: var(--din-tay-fung-red); text-shadow: 0 0 10px rgba(218, 41, 28, 0.5); }
+        #hero h1 span.separator { color: #fff; }
+        #hero h1 span.razer { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        #hero p { font-size: 1.8rem; margin-bottom: 40px; color: #fff; border-top: 1px solid rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.2); padding: 10px 0; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .btn { display: inline-block; padding: 12px 30px; background-color: var(--din-tay-fung-red); color: #fff; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; border-radius: 5px; border: 2px solid transparent; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .btn:hover { background-color: #000; border: 2px solid var(--razer-green); color: var(--razer-green); text-shadow: var(--neon-green-shadow); box-shadow: 0 0 15px rgba(51, 255, 51, 0.5); }
+        
+        /* Features Section */
+        #features { background-color: #111; }
+        #features h2 { text-align: center; font-size: 3rem; margin-bottom: 50px; position: relative; display: inline-block; left: 50%; transform: translateX(-50%); }
+        #features h2::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background-color: var(--razer-green); box-shadow: var(--neon-green-shadow); }
+        .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+        .feature-item { background-color: var(--secondary-dark); padding: 30px; border-radius: 10px; border: 1px solid #333; transition: all 0.3s ease; position: relative; }
+        .feature-item:hover { transform: translateY(-5px); border-color: rgba(51, 255, 51, 0.3); box-shadow: 0 5px 20px rgba(51, 255, 51, 0.1); }
+        .feature-item::before { content: '[DTFxRAZER_SPEC_#' + attr(data-id) + ']'; position: absolute; top: -10px; right: 20px; font-family: 'Share Tech Mono', monospace; color: var(--razer-green); background-color: #111; padding: 0 10px; font-size: 0.9rem; }
+        .feature-icon { font-size: 3rem; color: var(--razer-green); margin-bottom: 20px; text-align: center; }
+        .feature-item h3 { font-size: 1.8rem; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .feature-item h3 span { color: #fff; }
+        .feature-item p { font-size: 1.1rem; color: #ccc; }
+        
+        /* Fusion Showcase */
+        #fusion { background: linear-gradient(135deg, rgba(218,41,28,0.1) 0%, rgba(51,255,51,0.1) 100%); position: relative; }
+        #fusion h2 { text-align: center; font-size: 3rem; margin-bottom: 50px; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .fusion-content { display: flex; align-items: center; gap: 60px; }
+        .code-block { flex: 1; background-color: var(--secondary-dark); padding: 25px; border-radius: 10px; font-family: 'Share Tech Mono', monospace; border-left: 5px solid var(--din-tay-fung-red); border-right: 5px solid var(--razer-green); position: relative; }
+        .code-block::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, var(--din-tay-fung-red), var(--razer-green)); }
+        .code-header { color: #fff; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .code-line { color: var(--light-grey); margin-bottom: 5px; display: block; }
+        .code-line span.keyword { color: #ff79c6; }
+        .code-line span.property { color: #8be9fd; }
+        .code-line span.string { color: #f1fa8c; }
+        .code-line span.red { color: var(--din-tay-fung-red); }
+        .code-line span.green { color: var(--razer-green); font-weight: bold; }
+        .fusion-image { flex: 1; text-align: center; }
+        .fusion-image-placeholder { width: 100%; height: 400px; background-color: #222; border-radius: 10px; border: 2px dashed rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; transition: all 0.3s ease; }
+        .fusion-image-placeholder:hover { border-color: rgba(51, 255, 51, 0.5); background-color: #2a2a2a; }
+        .fusion-image-placeholder::after { content: '請提供 AI 生成的圖片或實際圖片。'; position: absolute; top: 10px; left: 10px; font-family: 'Share Tech Mono', monospace; color: #888; }
+        
+        /* Footer */
+        footer { background-color: #000; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #aaa; }
+        footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-logo { font-size: 1.5rem; font-family: 'Share Tech Mono', monospace; }
+        .footer-logo span:first-child { color: var(--din-tay-fung-red); }
+        .footer-logo span:last-child { color: var(--razer-green); }
+        .copyright { font-size: 0.9rem; }
+        .social-links { display: flex; gap: 20px; }
+        .social-links a:hover { color: var(--razer-green); text-shadow: var(--neon-green-shadow); }
+        
+        /* Media Queries */
+        @media (max-width: 992px) {
+            #hero h1 { font-size: 3rem; }
+            #hero p { font-size: 1.5rem; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .fusion-content { flex-direction: column; }
+            .fusion-image { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="#" class="logo"><span>鼎泰豐</span> x <span>RAZER</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#hero">主頁</a></li>
+                    <li><a href="#features">規格</a></li>
+                    <li><a href="#fusion">融合</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section id="hero">
+        <div class="container">
+            <h1><span>鼎泰豐</span> <span class="separator">x</span> <span class="razer">雷蛇</span></h1>
+            <p>頂級工藝的美味與電競效能的結合</p>
+            <p class="mono">[歡迎體驗鼎泰豐與Razer共同研發出的頂級饗宴。]</p>
+            <a href="#features" class="btn">深入了解</a>
+        </div>
+    </section>
+    
+    <section id="features">
+        <div class="container">
+            <h2>融合<span>規格</span></h2>
+            <div class="feature-grid">
+                <div class="feature-item" data-id="1">
+                    <div class="feature-icon">🥟</div>
+                    <h3><span>雷蛇</span> RGB <span>小籠包</span></h3>
+                    <p>利用 Razer Chroma 技術，每一顆小籠包都擁有 1680 萬色 RGB 燈效。燈效將隨著品嚐時間及美味程度進行呼吸般律動。</p>
+                </div>
+                <div class="feature-item" data-id="2">
+                    <div class="feature-icon">🌿</div>
+                    <h3><span>雷蛇</span> 智慧 <span>醬醋</span> 系統</h3>
+                    <p>由 Nari Ultimate 團隊研發的智慧感測系統，精準分析每一口所需要的醬油與醋的比例，讓美味體驗達到巔峰。</p>
+                </div>
+                <div class="feature-item" data-id="3">
+                    <div class="feature-icon">🔥</div>
+                    <h3><span>雷蛇</span> HyperScale <span>蒸籠</span> 溫控</h3>
+                    <p>搭載 64 位元核心處理器及 7 根熱導管，利用 Viper 級溫控演算法，確保每一格蒸籠溫度精準控制在 118.5°C 完美狀態。</p>
+                </div>
+                <div class="feature-item" data-id="4">
+                    <div class="feature-icon">⚔️</div>
+                    <h3><span>雷蛇</span> Mek-Anical <span>筷子</span> 2.0</h3>
+                    <p>採用 Razer 機械式按鍵技術，提供無與倫比的敲擊手感。筷尖感測器可精準控制夾取力度，保證不讓美味漏掉。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="fusion">
+        <div class="container">
+            <h2>融合<span>的奧秘</span></h2>
+            <div class="fusion-content">
+                <div class="code-block">
+                    <div class="code-header">/// 鼎泰豐 x RAZER 融合代碼 ///</div>
+                    <code class="code-line"><span class="keyword">function</span> calculateDeliciousness( <span class="property">xiaolongbao_type</span>, <span class="property">razer_chroma</span> ) {</div>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> base_deliciousness = <span class="red">100</span>; <span class="comment">// 鼎泰豐美味基底</span></code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">const</span> r_g_b_factor = <span class="green">razer_chroma.active</span> ? <span class="green">1.5</span> : <span class="red">1.0</span>; <span class="comment">// 雷蛇RGB加成</span></code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">return</span> base_deliciousness * r_g_b_factor;</div>
+                    <code class="code-line">}</code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="keyword">class</span> FusionProduct {</code>
+                    <code class="code-line">&nbsp;&nbsp;<span class="keyword">constructor</span>( <span class="property">name</span> ) {</code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">name</span> = <span class="string">'[DTFxRAZER]'</span> + <span class="property">name</span>;</code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">color</span> = [<span class="red">'紅'</span>, <span class="green">'綠'</span>]; <span class="comment">// 美味與效能的顏色</span></code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">deliciousness</span> = <span class="red">999</span>; <span class="comment">// 超越人類極限的美味</span></code>
+                    <code class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;this.<span class="property">fps</span> = <span class="green">240</span>; <span class="comment">// 品嚐時美味以每秒240張傳輸</span></code>
+                    <code class="code-line">&nbsp;&nbsp;}</code>
+                    <code class="code-line">}</code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="comment">// 啟動融合協議...</span></code>
+                    <code class="code-line"><span class="comment">// [WARNING] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"><span class="comment">// [WARNING] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"><span class="comment">// [SUCCESS] deliciousness levels reaching critical...</span></code>
+                    <code class="code-line"></code>
+                    <code class="code-line"><span class="comment">// 歡迎體驗鼎泰豐與雷蛇共同研發出的頂級饗宴。</span></code>
+                    <code class="code-line"><span class="comment">// 請提供 AI 生成的圖片或實際圖片。</span></code>
+                </div>
+                <div class="fusion-image">
+                    <div class="fusion-image-placeholder">
+                        AI 生成圖片展示區
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-logo"><span>鼎泰豐</span> x <span>RAZER</span></div>
+            <div class="copyright">&copy; 2026 鼎泰豐. 所有權利均由鼎泰豐與雷蛇所有。</div>
+            <div class="social-links mono">
+                [鼎泰豐_official] | [Razer_official]
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
