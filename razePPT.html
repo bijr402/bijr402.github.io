@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTF x RAZER 跨界戰略提案簡報</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --razer-red: #DA291C;
+            --chroma-red-glow: 0 0 15px rgba(218, 41, 28, 0.8), 0 0 30px rgba(218, 41, 28, 0.4);
+            --gold-accent: #D4AF37;
+            --gold-glow: 0 0 10px rgba(212, 175, 55, 0.5);
+            --dark-bg: #0A0A0A;
+            --panel-bg: rgba(20, 20, 20, 0.85);
+            --text-light: #EEEEEE;
+            --text-dim: #A0A0A0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { 
+            width: 100%; 
+            height: 100%; 
+            background-color: #000; 
+            font-family: 'Noto Sans TC', sans-serif; 
+            color: var(--text-light); 
+            overflow: hidden;
+        }
+
+        /* 16:9 簡報外殼 */
+        .presentation-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw; /* 16:9 比例 */
+            max-width: 177.78vh; /* 避免高度溢出 */
+            max-height: 100vh;
+            transform: translate(-50%, -50%);
+            background-color: var(--dark-bg);
+            border: 2px solid #222;
+            box-shadow: 0 0 40px rgba(218, 41, 28, 0.15);
+            overflow: hidden;
+        }
+
+        /* 全域霓虹邊框與雷達效果 */
+        .cyber-border {
+            position: absolute;
+            top: 10px; bottom: 10px; left: 10px; right: 10px;
+            border: 1px solid rgba(218, 41, 28, 0.2);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .cyber-corner {
+            position: absolute;
+            width: 15px; height: 15px;
+            border: 2px solid var(--gold-accent);
+            z-index: 11;
+        }
+        .tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+        .tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+        .bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+        .br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+        /* 旋轉雷達元件 */
+        .radar-box {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--razer-red);
+            border-radius: 50%;
+            z-index: 100;
+            opacity: 0.6;
+        }
+        .radar-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(218,41,28,0.4) 0%, rgba(0,0,0,0) 60%);
+            animation: radar-rotate 4s linear infinite;
+        }
+        @keyframes radar-rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 頁面切換控制 */
+        .slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 1;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 5;
+        }
+
+        /* 系統核心發光紅線動態 */
+        .laser-line {
+            width: 0%;
+            height: 2px;
+            background-color: var(--razer-red);
+            box-shadow: var(--chroma-red-glow);
+            margin: 15px 0 30px 0;
+            transition: width 0.8s cubic-bezier(0.1, 0.8, 0.2, 1) 0.3s;
+        }
+        .slide.active .laser-line {
+            width: 100%;
+        }
+
+        /* 文字飄移與發光小動態 */
+        .slide h2, .slide h1, .slide .content-box, .slide .img-box {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+        .slide.active h1 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+        .slide.active h2 { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+        .slide.active .laser-line { transition-delay: 0.4s; }
+        .slide.active .content-box { opacity: 1; transform: translateY(0); transition-delay: 0.5s; }
+        .slide.active .img-box { opacity: 1; transform: translateY(0); transition-delay: 0.6s; }
+
+        /* 排版樣式定義 */
+        .slide-layout-split {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .slide-layout-full {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1.hero-title {
+            font-size: 3.8rem;
+            font-family: 'Share Tech Mono', monospace;
+            color: #FFF;
+            text-shadow: var(--chroma-red-glow);
+            margin-bottom: 5px;
+        }
+        h2.slide-title {
+            font-size: 2.5rem;
+            color: #FFF;
+            border-left: 5px solid var(--gold-accent);
+            padding-left: 15px;
+        }
+        .subtitle {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--gold-accent);
+            letter-spacing: 3px;
+            text-shadow: var(--gold-glow);
+        }
+        .content-box {
+            background-color: var(--panel-bg);
+            border: 1px solid #222;
+            padding: 30px;
+            border-radius: 6px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+        .content-box p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .content-box p strong {
+            color: var(--razer-red);
+            text-shadow: 0 0 5px rgba(218,41,28,0.3);
+        }
+        .bullet-list {
+            margin-left: 20px;
+        }
+        .bullet-list li {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+            list-style-type: square;
+        }
+        .bullet-list li strong {
+            color: var(--gold-accent);
+        }
+
+        /* 圖片外框美飾 */
+        .img-box {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background-color: #000;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .img-box img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .img-box::before {
+            content: '// CODE_STATUS: ACTIVE';
+            position: absolute;
+            top: 5px; left: 8px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--razer-red);
+        }
+
+        /* 特殊網格與感知圖 */
+        .mvp-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .mvp-card {
+            background: #111;
+            border-top: 3px solid var(--razer-red);
+            padding: 20px;
+            border-radius: 4px;
+        }
+        .mvp-card h3 { color: var(--gold-accent); margin-bottom: 10px; font-size: 1.2rem; }
+        .mvp-card p { font-size: 0.95rem; color: #ccc; }
+
+        .perceptual-map {
+            width: 100%;
+            height: 250px;
+            border: 2px solid #333;
+            position: relative;
+            background: radial-gradient(circle, #1a1a1a 100%, #000 100%);
+        }
+        .map-axis-x { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #555; }
+        .map-axis-y { position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: #555; }
+        .map-label { position: absolute; font-size: 0.8rem; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; }
+        .map-node { position: absolute; padding: 4px 10px; border-radius: 3px; font-size: 0.85rem; font-weight: bold; }
+        .node-competitor { background: #333; color: #888; top: 70%; left: 20%; }
+        .node-target { background: var(--razer-red); color: #FFF; top: 15%; left: 75%; box-shadow: var(--chroma-red-glow); border: 1px solid var(--gold-accent); }
+
+        /* 頁碼提示 */
+        .slide-counter {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--gold-accent);
+            text-shadow: var(--gold-glow);
+            z-index: 100;
+        }
+        
+        /* 進入全螢幕點擊提示（僅一開始顯示） */
+        .fullscreen-tip {
+            position: fixed;
+            top: 15px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(218, 41, 28, 0.9);
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            z-index: 2000;
+            pointer-events: none;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fullscreen-tip" id="fsTip">💡 點擊網頁任一處可切換「全螢幕報告模式」，使用鍵盤左右鍵 ← → 翻頁</div>
+
+    <div class="presentation-container" id="presentation">
+        <div class="cyber-border"></div>
+        <div class="cyber-corner tl"></div>
+        <div class="cyber-corner tr"></div>
+        <div class="cyber-corner bl"></div>
+        <div class="cyber-corner br"></div>
+        <div class="radar-box"></div>
+        <div class="slide-counter" id="counter">PAGE // 01</div>
+
+        <!-- ================= 第 1 頁 ================= -->
+        <div class="slide active">
+            <div class="slide-layout-full" style="padding-top: 40px;">
+                <div class="subtitle">STRATEGIC CO-BRANDING PROPOSAL</div>
+                <h1 class="hero-title">🥟 鼎泰豐 x RAZER ⚔️</h1>
+                <div class="laser-line"></div>
+                <div class="content-box" style="background: transparent; border: none;">
+                    <p style="font-size: 1.6rem; color: var(--gold-accent); font-weight: bold; text-shadow: var(--gold-glow);">
+                        PERFORMANCE MEETS FLAVOR
+                    </p>
+                    <p style="color: var(--text-dim); font-size: 1.1rem; margin-top: 10px;">
+                        當極致硬體效能遇上頂級工藝美味 // 跨界顛覆性提案
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 2 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">突破硬體同質化的天花板</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="content-box">
+                    <p>當前電競周邊與高檔餐飲皆面臨<strong>「品牌忠誠度高、但跨圈新客成長放緩」</strong>的瓶頸市場挑戰。</p>
+                    <p>這個提案不是要賣一個普通的商品，而是要為渴望儀式感的世代，創造一個<strong>「結合視覺、觸覺與味覺的沉浸式生活風格體驗」</strong>。</p>
+                </div>
+                <div class="img-box">
+                    <img src="產品系列2.jpg" alt="市場突破">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 3 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">Z 世代的「挑剔經濟學」</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="img-box">
+                    <!-- 使用你原本預留的產品圖檔名 -->
+                    <img src="產品1.jpg" alt="世代美學">
+                </div>
+                <div class="content-box">
+                    <p>現代年輕消費者極其願意為了<strong>「極致的儀式感」</strong>買單。這正是這個體驗值得被創造的核心價值。</p>
+                    <p>將 Razer 偏執的硬體美學與鼎泰豐對細節的魔鬼要求完美結合，能瞬間引爆全球社群話題，創造下一個歷史級的跨界典範。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 4 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">雙向頂級流量的變現密碼</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-full">
+                <div class="content-box" style="margin-bottom: 20px;">
+                    <p>這場跨界背後蘊含了龐大的<strong>商業潛在變現機會</strong>：</p>
+                </div>
+                <div class="mvp-grid">
+                    <div class="mvp-card" style="border-top-color: var(--gold-accent);">
+                        <h3>Razer 跨圈拓展</h3>
+                        <p>精準吸引重視生活質感的非硬體核心高消費族群走入品牌生態系。</p>
+                    </div>
+                    <div class="mvp-card" style="border-top-color: var(--razer-red);">
+                        <h3>老饕科技潮流化</h3>
+                        <p>將傳統精緻餐飲的老饕，轉化為具備前衛科技品味的潮牌追隨者。</p>
+                    </div>
+                    <div class="mvp-card" style="border-top-color: var(--gold-accent);">
+                        <h3>高額溢價營收</h3>
+                        <p>限量版周邊預期溢價空間達 150%+，全方位帶動聯名實體店與周邊收益。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 5 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">誰是「極致挑剔者」？</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="content-box">
+                    <p>我們精準鎖定並定義出市場中重疊的<strong>兩大核心客群</strong>：</p>
+                    <ul class="bullet-list">
+                        <li><strong>Hardcore Gamers (硬核玩家)：</strong>對按鍵反饋差 1 毫秒、對 RGB 燈效同步率極度偏執的科技玩家。</li>
+                        <li><strong>Gourmet Foodies (頂級食客)：</strong>對小籠包食材比例、黃金18摺工藝細節絕不妥協的挑剔饕客。</li>
+                    </ul>
+                </div>
+                <div class="img-box">
+                    <img src="產品2.jpg" alt="受眾定義">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 6 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">體驗同質化與儀式感缺失</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="img-box">
+                    <img src="產品3.jpg" alt="核心痛點">
+                </div>
+                <div class="content-box">
+                    <p>在核心客群的日常生活中，隱藏著尚未被滿足的<strong>痛點與核心需求</strong>：</p>
+                    <p>電競玩家在漫長高壓的遊戲等待與實況中，缺乏高質感的「宅餐飲伴侶」；而食客在品味高檔美食時，缺乏能彰顯個人科技品味的<strong>「硬核餐具儀式感」</strong>。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 7 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">數據說話：挑剔靈魂的重疊性</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="content-box">
+                    <p>這絕非閉門造車的幻想，我們透過嚴格的<strong>痛點與需求市場驗證</strong>：</p>
+                    <p>社群數據重合度分析顯示，高達 <strong>78%</strong> 的 Razer 擁護者同時也是精緻美食的熱烈追求者。他們強烈渴望市面上能出現「具備頂級硬體質感、且具高話題性」的跨界非電子潮品！</p>
+                </div>
+                <div class="img-box" style="background-color: #111; display: flex; flex-direction: column; justify-content: center; padding: 20px;">
+                    <div style="font-family: 'Share Tech Mono', monospace; font-size: 3rem; color: var(--razer-red); font-weight: bold; text-shadow: var(--chroma-red-glow);">78%</div>
+                    <div style="color: var(--gold-accent); font-size: 1rem; margin-top: 5px;">AUDIENCE OVERLAP MATCH</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 8 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">[DTFxRAZER] 頂級協議啟動</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="img-box">
+                    <img src="產品系列2.jpg" alt="產品願景">
+                </div>
+                <div class="content-box">
+                    <p>我們的<strong>產品願景與核心亮點</strong>：</p>
+                    <p>打破平行線，將<strong>「Chroma RGB 幻彩燈效」</strong>與<strong>「頂級黃金餐飲工藝」</strong>深度綁定。讓科技不再冰冷，而是透過呼吸光暈與精準控溫，與極致美味產生共鳴。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 9 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">MVP 三大夢幻逸品釋出</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-full">
+                <div class="mvp-grid">
+                    <div class="mvp-card">
+                        <h3>Chroma RGB 蒸籠</h3>
+                        <p>支援 1680 萬色，燈效會隨蒸汽熱度與品嚐的最佳時間進行系統級呼吸律動，完美對應視覺享受的痛點。</p>
+                    </div>
+                    <div class="mvp-card">
+                        <h3>Mek-Anical 機械筷 2.0</h3>
+                        <p>導入電競級軸體結構，提供極致清脆的夾取力度回饋與敲擊手感，徹底解決用餐時缺乏硬體回饋的缺憾。</p>
+                    </div>
+                    <div class="mvp-card">
+                        <h3>智慧感測醬醋碟</h3>
+                        <p>內建感測元件，即時演算並提示鼎泰豐黃金比例（醬油 3 : 醋 1）的專屬數據，將挑剔的味覺數字化。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 10 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">座標軸上的絕對統治力</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="content-box">
+                    <p>透過<strong>市場感知圖 (Perceptual Map)</strong> 進行差異化分析：</p>
+                    <p>傳統硬體與傳統餐具皆落在「低話題、純實用」的擁擠紅海。而本聯名產品則強勢獨佔<strong>「極致奢華工藝 x 硬核電競美學」</strong>的全新右上角絕對藍海！</p>
+                </div>
+                <div class="perceptual-map">
+                    <div class="map-axis-x"></div>
+                    <div class="map-axis-y"></div>
+                    <div class="map-label" style="top: 2px; left: 51%; transform: translateX(-50%);">極致硬核美學 ↑</div>
+                    <div class="map-label" style="bottom: 2px; left: 51%; transform: translateX(-50%);">傳統實用價值 ↓</div>
+                    <div class="map-label" style="top: 51%; right: 5px; transform: translateY(-50%);">精緻奢華 →</div>
+                    <div class="map-label" style="top: 51%; left: 5px; transform: translateY(-50%);">← 普通同質</div>
+                    <div class="map-node node-competitor">傳統競品/周邊</div>
+                    <div class="map-node node-target">DTF x RAZER</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 11 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">預售限定與全球 500 套盲盒測試</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="img-box">
+                    <img src="產品1.jpg" alt="市場測試">
+                </div>
+                <div class="content-box">
+                    <p>我們將如何精準<strong>測試市場對 MVP 的反應</strong>：</p>
+                    <p>計畫於 Razer 官網與鼎泰豐旗艦店全球同步限量釋出 <strong>500 套限量聯名體驗盲盒</strong>。透過頂級遊戲實況主（Streamers）與美食網紅跨界聯動開箱，在 48 小時內高效驗證市場的搶購熱度與社群聲量。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= 第 12 頁 ================= -->
+        <div class="slide">
+            <h2 class="slide-title">成功的定義：指標與展望</h2>
+            <div class="laser-line"></div>
+            <div class="slide-layout-split">
+                <div class="content-box">
+                    <p>我們用最嚴謹的關鍵指標 (KPIs) 來<strong>界定 MVP 的最終成功</strong>：</p>
+                    <ul class="bullet-list">
+                        <li><strong>全球社群聲量：</strong>跨界聯動曝光量目標突破 1,000 萬次。</li>
+                        <li><strong>極致轉化效率：</strong>全球 500 套預售盲盒於釋出 3 秒內完售。</li>
+                        <li><strong>最終戰略價值：</strong>成功驗證市場真空，向財務長與股東爭取下一階段「全球實體聯名體驗店」擴展的正式預算審批！</li>
+                    </ul>
+                </div>
+                <div class="img-box">
+                    <img src="產品2.jpg" alt="戰略成功">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 頁面切換控制核心邏輯
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('counter');
+        const container = document.getElementById('presentation');
+        const fsTip = document.getElementById('fsTip');
+        let currentSlide = 0;
+
+        function updateSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            
+            // 更新頁碼顯示
+            let displayNum = currentSlide + 1;
+            if(displayNum < 10) displayNum = '0' + displayNum;
+            counter.innerText = 'PAGE // ' + displayNum;
+        }
+
+        // 鍵盤事件監聽 (左右方向鍵)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                updateSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                updateSlide(currentSlide - 1);
+            }
+        });
+
+        // 點擊網頁自動全螢幕功能（方便跟高層報告時一鍵進入狀態）
+        document.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`無法切換全螢幕: ${err.message}`);
+                });
+                fsTip.style.display = 'none'; // 進入全螢幕後隱藏提示
+            }
+        });
+    </script>
+</body>
+</html>
